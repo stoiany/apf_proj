@@ -11,72 +11,74 @@
 <body>
 <div class="container">
     <header>
-        <h1>My Lab #1</h1>
+        <h1>Чергування лабараторії (Варіант 11)</h1>
     </header>
     <main>
-        <h2>Create form</h2>
         <form id="createForm">
+            <h2>Форма створення запису</h2>
             <div class="field">
-                <label for="nameInput">Name</label>
-                <input id="nameInput" class="input" type="text" placeholder="Your name" required/>
+                <label for="dateInput">Дата</label>
+                <input id="dateInput" class="input" type="date" required/>
                 <p class="error-text" id="field1Error"></p>
             </div>
 
             <div class="field">
-                <label for="seatInput">Seat</label>
-                <input id="seatInput" class="input" type="number" placeholder="Your seat number" required/>
+                <label for="timeSlotSelect">Зміна</label>
+                <select id="timeSlotSelect" required>
+                    <option value="">Виберіть час чергування</option>
+                    <option value="morning">8:00 — 12:00</option>
+                    <option value="day">12:00 — 16:00</option>
+                    <option value="evening">16:00 — 20:00</option>
+                </select>
                 <p class="error-text" id="field2Error"></p>
             </div>
 
             <div class="field">
-                <label for="statusSelect">First time with us?</label>
-                <select id="statusSelect">
-                    <option value="">Choose an option</option>
-                    <option value="never">Never been</option>
-                    <option value="onetime">Been there one time</option>
-                    <option value="used">Used to visit you</option>
-                    <option value="always">Always going to you</option>
-                </select>
+                <label for="nameInput">Користувач</label>
+                <input id="nameInput" class="input" type="text" placeholder="Призвіще" required/>
                 <p class="error-text" id="field3Error"></p>
             </div>
 
+            <div class="field">
+                <label for="commentInput">Коментар</label>
+                <textarea id="commentInput" class="input" rows="3"></textarea>
+                <p class="error-text" id="field4Error"></p>
+            </div>
+
+            <div class="field">
+                <label for="statusInput">Статус</label>
+                <select id="statusInput" required>
+                    <option value="">Виберіть статус чергування</option>
+                    <option value="scheduled">Заплановано</option>
+                    <option value="completed">Виконано</option>
+                    <option value="missed">Пропущено</option>
+                </select>
+            </div>
+
             <div class="buttons">
-                <button type="submit">Submit</button>
-                <button type="button">Reset</button>
+                <button type="submit">Підтвердити</button>
+                <button type="button">Стерти</button>
             </div>
         </form>
 
-        <h2>List of records</h2>
-        <section id="listSection">
-            <ul id="records">
-                <li>123</li>
-                <li>456</li>
-                <li>789</li>
-            </ul>
-        </section>
-
-        <h2>Table of records</h2>
         <section id="tableSection">
-        <table id="itemsTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="itemsTableBody">
-                <tr>
-                    <td>1</td>
-                    <td><-- JS --></td>
-                </tr>
-            </tbody>
-        </table>
+            <h2>Записи</h2>
+            <table id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Дата</th>
+                        <th>Час</th>
+                        <th>Користувач</th>
+                        <th>Статус</th>
+                        <th>Коментар</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsTableBody">
+                </tbody>
+            </table>
         </section>
     </main>
 </div>
 </body>
 </html>
-<!--test-->

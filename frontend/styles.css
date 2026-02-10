@@ -10,11 +10,15 @@ body {
     padding: 16px;
 }
 
+main {
+    display: flex;
+    gap: 16px;
+}
+
 form {
     padding: 20px;
     border: 3px solid #aaa;
     border-radius: 12px;
-    width: 50%;
     background: #fff;
 }
 
@@ -22,7 +26,6 @@ section {
     padding: 20px;
     border: 3px solid #aaa;
     border-radius: 12px;
-    width: 70%;
     background: #fff;
 }
 
@@ -45,6 +48,7 @@ td, td {
 }
 
 th {
+    padding: 8px;
     background: #fff;
 }
 
@@ -62,7 +66,7 @@ th {
 .field select {
     width: 100%;
     padding: 5px;
-    border: 1px solid #bbb;
+    border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
 }
