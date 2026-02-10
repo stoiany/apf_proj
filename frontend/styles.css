@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    background: #f5f5f5;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+form {
+    padding: 20px;
+    border: 3px solid #aaa;
+    border-radius: 12px;
+    width: 50%;
+    background: #fff;
+}
+
+section {
+    padding: 20px;
+    border: 3px solid #aaa;
+    border-radius: 12px;
+    width: 70%;
+    background: #fff;
+}
+
+#tableSection {
+    padding: 20px;
+    border: 3px solid #aaa;
+    border-radius: 12px;
+    background: #fff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background: #fff;
+}
+
+.field {
+    margin-bottom: 12px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.buttons {
+    display: flex;
+    margin-top: 12px;
+    gap: 8px;
+}
+
+button {
+    padding: 8px 12px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.invalid {
+    border-color: #c00;
+}
+
+.error-text {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #c00;
+    min-height: 14px;
+}
