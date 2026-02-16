@@ -57,6 +57,7 @@ function validate(dto){
 
 function readForm() {
     return {
+        id: Date.now().toString(),
         date: document.getElementById("dateInput").value,
         time: document.getElementById("timeSlotSelect").value,
         username: document.getElementById("nameInput").value,
@@ -100,6 +101,24 @@ function renderTable(items) {
             </tr>
         `).join("");
 }
+
+function deleteItemById(id){
+    const index = items.findIndex(item => String(item.id) === String(id));
+    if(index !== -1) {
+        items.splice(index, 1);
+    }
+}
+
+const tbody = document.getElementById("itemsTableBody");
+tbody.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if(target.classList.contains("delete-btn")){
+        const id = target.dataset.id;
+        deleteItemById(id);
+        renderTable(items);
+    }
+});
 
 const btn = document.getElementById("reset-button");
 btn.addEventListener("click", () => {
