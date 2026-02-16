@@ -24,43 +24,35 @@ function validate(dto){
     clearErrors();
 
     let isValid = true;
-    // const date = dto.date;
     const currentDate = new Date();
     const isoDate = currentDate.toISOString().slice(0,10);
     if(dto.date === ""){
         showError("dateInput", "dateError", "Оберіть дату чергування.");
         isValid = false;
-        return isValid;
     } else if(dto.date < isoDate){
         showError("dateInput", "dateError", "Введене значення не коректне.");
         isValid = false;
-        return isValid
     }
     if(dto.time === ""){
         showError("timeSlotSelect", "timeError", "Оберіть час зі списку.");
         isValid = false;
-        return isValid;
     }
     const name = dto.username.trim();
     if(name === ""){
         showError("nameInput", "nameError", "Обов'язкове поле.");
         isValid = false;
-        return isValid;
     } else if(dto.username.length > 25){
         showError("nameInput", "nameError", "Ім'я користувача не може бути більше за 25 символів.");
         isValid = false;
-        return isValid;
     }
     const comment = dto.comment.trim();
     if(comment.length > 30 ){
         showError("commentInput", "commentError", "Максимальна кількість символів: 30");
         isValid = false;
-        return isValid;
     }
     if(dto.status === ""){
         showError("statusInput", "statusError", "Оберіть статус запису.");
         isValid = false;
-        return isValid;
     }
     return isValid;
 }
