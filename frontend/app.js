@@ -20,40 +20,40 @@ function showError(inputId, errorId, message){
     document.getElementById(errorId).innerHTML = message;
 }
 
-function validate(){
+function validate(dto){
     clearErrors();
 
     let isValid = true;
-    const date = document.getElementById("dateInput").value;
+    // const date = dto.date;
     const currentDate = new Date();
     const isoDate = currentDate.toISOString().slice(0,10);
-    if(date === ""){
+    if(dto.date === ""){
         showError("dateInput", "dateError", "Оберіть дату чергування.");
         isValid = false;
         return isValid;
-    } else if(date < isoDate){
+    } else if(dto.date < isoDate){
         showError("dateInput", "dateError", "Введене значення не коректне.");
         isValid = false;
         return isValid
     }
-    if(document.getElementById("timeSlotSelect").value === ""){
+    if(dto.time === ""){
         showError("timeSlotSelect", "timeError", "Оберіть час зі списку.");
         isValid = false;
         return isValid;
     }
-    const name = document.getElementById("nameInput").value.trim();
+    const name = dto.username.trim();
     if(name === ""){
         showError("nameInput", "nameError", "Обов'язкове поле.");
         isValid = false;
         return isValid;
     }
-    const comment = document.getElementById("commentInput").value.trim();
+    const comment = dto.comment.trim();
     if(comment.length > 30 ){
         showError("commentInput", "commentError", "Максимальна кількість символів: 30");
         isValid = false;
         return isValid;
     }
-    if(document.getElementById("statusInput").value === ""){
+    if(dto.status === ""){
         showError("statusInput", "statusError", "Оберіть статус запису.");
         isValid = false;
         return isValid;
@@ -104,11 +104,11 @@ btn.addEventListener("click", () => {
 const form = document.getElementById("createForm");
 form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const isValid = validate();
+    const dto = readForm();
+    const isValid = validate(dto);
     if(isValid !== true){
         return;
     }
-    const dto = readForm();
     items.push(dto);
     renderTable(items);
     clearForm();
