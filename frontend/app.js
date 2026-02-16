@@ -46,6 +46,10 @@ function validate(dto){
         showError("nameInput", "nameError", "Обов'язкове поле.");
         isValid = false;
         return isValid;
+    } else if(dto.username.length > 25){
+        showError("nameInput", "nameError", "Ім'я користувача не може бути більше за 25 символів.");
+        isValid = false;
+        return isValid;
     }
     const comment = dto.comment.trim();
     if(comment.length > 30 ){
