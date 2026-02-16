@@ -1,5 +1,3 @@
-const tableEl = document.getElementById("table");
-
 const items = [];
 
 function clearError(inputId, errorId){
@@ -77,13 +75,24 @@ function clearForm() {
 
 function renderTable(items) {
     const tbody = document.getElementById("itemsTableBody");
+    const tableTime = {
+        "morning": "Ранок",
+        "day": "День",
+        "evening": "Вечір"
+    }
+
+    const tableStatus = {
+        "scheduled": "Заплановано",
+        "completed": "Виконано",
+        "missed": "Пропущено"
+    }
     tbody.innerHTML = items.map((item, index) => `
             <tr>
                 <td>${index + 1}</td>
                 <td>${item.date}</td>
-                <td>${item.time}</td>
+                <td>${tableTime[item.time] || item.time}</td>
                 <td>${item.username}</td>
-                <td>${item.status}</td>
+                <td>${tableStatus[item.status] || item.status}</td>
                 <td>${item.comment}</td>
                 <td>
                     <button type="button" class="delete-btn" data-id="${item.id}">Delete</button>
