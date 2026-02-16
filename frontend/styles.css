@@ -5,7 +5,7 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 16px;
 }
@@ -52,6 +52,17 @@ th {
     background: #fff;
 }
 
+.invalid {
+    border-color: #c00 !important;
+}
+
+.error-text {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #c00;
+    min-height: 14px;
+}
+
 .field {
     margin-bottom: 12px;
 }
@@ -82,15 +93,4 @@ button {
     border: 1px solid #888;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.invalid {
-    border-color: #c00;
-}
-
-.error-text {
-    margin: 4px 0 0;
-    font-size: 12px;
-    color: #c00;
-    min-height: 14px;
 }

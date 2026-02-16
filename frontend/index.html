@@ -18,41 +18,42 @@
             <h2>Форма створення запису</h2>
             <div class="field">
                 <label for="dateInput">Дата</label>
-                <input id="dateInput" class="input" type="date" required/>
-                <p class="error-text" id="field1Error"></p>
+                <input id="dateInput" class="input" type="date"/>
+                <p class="error-text" id="dateError"></p>
             </div>
 
             <div class="field">
                 <label for="timeSlotSelect">Зміна</label>
-                <select id="timeSlotSelect" required>
+                <select id="timeSlotSelect">
                     <option value="">Виберіть час чергування</option>
                     <option value="morning">8:00 — 12:00</option>
                     <option value="day">12:00 — 16:00</option>
                     <option value="evening">16:00 — 20:00</option>
                 </select>
-                <p class="error-text" id="field2Error"></p>
+                <p class="error-text" id="timeError"></p>
             </div>
 
             <div class="field">
                 <label for="nameInput">Користувач</label>
-                <input id="nameInput" class="input" type="text" placeholder="Призвіще" required/>
-                <p class="error-text" id="field3Error"></p>
+                <input id="nameInput" class="input" type="text" placeholder="Вкажіть ім'я користувача"/>
+                <p class="error-text" id="nameError"></p>
             </div>
 
             <div class="field">
                 <label for="commentInput">Коментар</label>
-                <textarea id="commentInput" class="input" rows="3"></textarea>
-                <p class="error-text" id="field4Error"></p>
+                <textarea id="commentInput" class="input" rows="3" maxlength="30"></textarea>
+                <p class="error-text" id="commentError"></p>
             </div>
 
             <div class="field">
                 <label for="statusInput">Статус</label>
-                <select id="statusInput" required>
+                <select id="statusInput">
                     <option value="">Виберіть статус чергування</option>
                     <option value="scheduled">Заплановано</option>
                     <option value="completed">Виконано</option>
                     <option value="missed">Пропущено</option>
                 </select>
+                <p class="error-text" id="statusError"></p>
             </div>
 
             <div class="buttons">
