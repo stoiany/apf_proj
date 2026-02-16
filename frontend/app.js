@@ -72,13 +72,11 @@ function readForm() {
 }
 
 function clearForm() {
-    return {
-        date: document.getElementById("dateInput").value = "",
-        time: document.getElementById("timeSlotSelect").value = "",
-        username: document.getElementById("nameInput").value = "",
-        status: document.getElementById("statusInput").value = "",
-        comment: document.getElementById("commentInput").value = ""
-    };
+    document.getElementById("dateInput").value = "";
+    document.getElementById("timeSlotSelect").value = "";
+    document.getElementById("nameInput").value = "";
+    document.getElementById("statusInput").value = "";
+    document.getElementById("commentInput").value = "";
 }
 
 function renderTable(items) {
