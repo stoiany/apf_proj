@@ -22,17 +22,12 @@ function validate(dto){
     clearErrors();
 
     let isValid = true;
-    const currentDate = new Date();
-    const isoDate = currentDate.toISOString().slice(0,10);
     if(dto.date === ""){
-        showError("dateInput", "dateError", "Оберіть дату чергування.");
-        isValid = false;
-    } else if(dto.date < isoDate){
-        showError("dateInput", "dateError", "Введене значення не коректне.");
+        showError("dateInput", "dateError", "Обов'язкове поле.");
         isValid = false;
     }
     if(dto.time === ""){
-        showError("timeSlotSelect", "timeError", "Оберіть час зі списку.");
+        showError("timeSlotSelect", "timeError", "Обов'язкове поле.");
         isValid = false;
     }
     const name = dto.username.trim();
@@ -49,7 +44,7 @@ function validate(dto){
         isValid = false;
     }
     if(dto.status === ""){
-        showError("statusInput", "statusError", "Оберіть статус запису.");
+        showError("statusInput", "statusError", "Обов'язкове поле.");
         isValid = false;
     }
     return isValid;
