@@ -31,8 +31,8 @@ form.addEventListener("click", (event) => {
         if(isValid !== true){
             return;
         }
-        const isDuplicate = addItem(dto);
-        if(isDuplicate.success === false){ alert(isDuplicate.message); return; }
+        const result = addItem(dto);
+        if(result.success === false){ alert(result.message); return; }
         addItem(dto);
         renderTable(items);
         clearForm();
@@ -42,15 +42,10 @@ form.addEventListener("click", (event) => {
         const id = target.dataset.id;
         const dto = readForm();
         const isValid = validate(dto);
-        if(isValid !== true){
-            return;
-        }
-        const index = items.findIndex(item => String(item.id) === String(id));
-        if(index === -1){
-            alert("Запису що Ви намагаєтеся редагувати не існує.");
-        }
+        if(isValid === false){ return; }
         dto.id = id;
-        updateItem(id, dto);
+        const result = updateItem(id, dto);
+        if(result.success === false){ alert(result.message); return; }
         renderTable(items);
         clearForm();
         startForm();

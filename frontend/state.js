@@ -38,10 +38,16 @@ function addItem(dto){
 
 function updateItem(id, dto){
     const index = items.findIndex(item => String(item.id) === String(id));
-    if(index !==-1){
-        items[index] = dto;
+    if(index === -1){
+        return { success: false, message: "Запису що Ви намагаєтеся відредагувати не існує." };
     }
+    const isDuplicate = items.some(item => String(item.date) === String(dto.date) && String(item.time) === String(dto.time) && String(item.id) !== String(dto.id));
+    if(isDuplicate === true){
+        return { success: false, message: "Запис на цей час вже існує." };
+    }
+    items[index] = dto;
     saveToStorage(items);
+    return { success: true };
 }
 
 function validate(dto){
