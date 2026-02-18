@@ -175,6 +175,7 @@ form.addEventListener("click", (event) => {
         if(index === -1){
             alert("Запис який Ви намагаєтеся зберігти більше не існує.");
         }
+        dto.id = id;
         items[index] = dto;
         renderTable(items);
         clearForm();
