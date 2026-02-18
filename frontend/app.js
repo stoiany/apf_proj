@@ -115,20 +115,25 @@ tbody.addEventListener("click", (event) => {
     }
 });
 
-const btn = document.getElementById("reset-button");
-btn.addEventListener("click", () => {
-    clearForm();
 });
 
 const form = document.getElementById("createForm");
-form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const dto = readForm();
-    const isValid = validate(dto);
-    if(isValid !== true){
-        return;
+form.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if(target.classList.contains("reset-button")){
+        clearForm();
     }
-    items.push(dto);
-    renderTable(items);
-    clearForm();
+
+    if(target.classList.contains("submit-button")){
+        event.preventDefault();
+        const dto = readForm();
+        const isValid = validate(dto);
+        if(isValid !== true){
+            return;
+        }
+        items.push(dto);
+        renderTable(items);
+        clearForm();
+    }
 });
