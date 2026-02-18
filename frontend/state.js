@@ -1,14 +1,34 @@
-const items = [];
+const STORAGE_KEY = "lab_items";
+
+function saveToStorage(items){
+    const json = JSON.stringify(items);
+    localStorage.setItem(STORAGE_KEY, json);
+}
+
+function loadFromStorage(STORAGE_KEY){
+    const json = localStorage.getItem(STORAGE_KEY);
+    if(json === null) return [];
+    try {
+        const data = JSON.parse(json);
+        return Array.isArray(data) ? data : [];
+    } catch {
+        return [];
+    }
+}
+
+let items = loadFromStorage(STORAGE_KEY);
 
 function deleteItemById(id){
     const index = items.findIndex(item => String(item.id) === String(id));
     if(index !== -1) {
         items.splice(index, 1);
     }
+    saveToStorage(items);
 }
 
 function addItem(dto){
     items.push(dto);
+    saveToStorage(items);
 }
 
 function updateItem(id, dto){
@@ -16,6 +36,7 @@ function updateItem(id, dto){
     if(index !==-1){
         items[index] = dto;
     }
+    saveToStorage(items);
 }
 
 function validate(dto){

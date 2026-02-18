@@ -1,3 +1,5 @@
+renderTable(items);
+
 const tbody = document.getElementById("itemsTableBody");
 tbody.addEventListener("click", (event) => {
     const target = event.target;
