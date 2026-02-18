@@ -31,6 +31,8 @@ form.addEventListener("click", (event) => {
         if(isValid !== true){
             return;
         }
+        const isDuplicate = addItem(dto);
+        if(isDuplicate.success === false){ alert(isDuplicate.message); return; }
         addItem(dto);
         renderTable(items);
         clearForm();

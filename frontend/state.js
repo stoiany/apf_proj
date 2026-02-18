@@ -27,8 +27,13 @@ function deleteItemById(id){
 }
 
 function addItem(dto){
+    const isDuplicate = items.some(item => String(item.date) === String(dto.date) && String(item.time) === String(dto.time));
+    if(isDuplicate === true){
+        return { success: false, message: "Запис на цей час вже існує." };
+    }
     items.push(dto);
     saveToStorage(items);
+    return { success: true };
 }
 
 function updateItem(id, dto){
