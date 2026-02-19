@@ -95,3 +95,15 @@ function renderTable(items) {
             </tr>
         `).join("");
 }
+
+const filterInput = document.getElementById("filterInput");
+const sortInput = document.getElementById("sortInput");
+
+function updateView(){
+    const filter = filterInput.value;
+    const sort = sortInput.value;
+
+    filterArray(filter);
+    sortArray(sort);
+    renderTable(processedItems);
+}

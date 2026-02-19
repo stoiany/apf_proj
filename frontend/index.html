@@ -66,6 +66,25 @@
 
         <section id="tableSection">
             <h2>Записи</h2>
+            <div id="filteringSelect">
+                <div class="field">
+                <label for="filterInput">Фільтрування</label>
+                <select id="filterInput">
+                    <option value="all">Всі записи</option>
+                    <option value="scheduled">Заплановано</option>
+                    <option value="completed">Виконано</option>
+                    <option value="missed">Пропущено</option>
+                </select>
+                </div>
+                <div class="field">
+                <label for="sortInput">Сортування</label>
+                <select id="sortInput">
+                    <option value="default">За замовчуванням (як додано)</option>
+                    <option value="dateAsc">За датою (спочатку старі)</option>
+                    <option value="dateDesc">За датою (спочатку нові)</option>
+                </select>
+                </div>
+            </div>
             <table id="itemsTable">
                 <thead>
                     <tr>

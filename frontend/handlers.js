@@ -1,4 +1,4 @@
-renderTable(items);
+updateView();
 
 const fieldsToValidate = [
     { inputId: "dateInput", errorId: "dateError" },
@@ -43,6 +43,9 @@ fieldsToValidate.forEach(field => {
    });
 });
 
+filterInput.addEventListener("change", updateView);
+sortInput.addEventListener("change", updateView);
+
 const tbody = document.getElementById("itemsTableBody");
 tbody.addEventListener("click", (event) => {
     const target = event.target;
@@ -50,7 +53,7 @@ tbody.addEventListener("click", (event) => {
     if(target.classList.contains("delete-btn")){
         const id = target.dataset.id;
         deleteItemById(id);
-        renderTable(items);
+        updateView();
     }
 
     if(target.classList.contains("edit-btn")){
@@ -76,7 +79,7 @@ form.addEventListener("click", (event) => {
         }
         const result = addItem(dto);
         if(result.success === false){ alert(result.message); return; }
-        renderTable(items);
+        updateView();
         clearForm();
     }
 
@@ -88,7 +91,7 @@ form.addEventListener("click", (event) => {
         dto.id = id;
         const result = updateItem(id, dto);
         if(result.success === false){ alert(result.message); return; }
-        renderTable(items);
+        updateView();
         clearForm();
         startForm();
     }

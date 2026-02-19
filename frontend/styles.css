@@ -15,6 +15,20 @@ main {
     gap: 16px;
 }
 
+#filteringSelect {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+#filteringSelect select {
+    width: 100%;
+}
+
+div .field {
+    width: 100%;
+}
+
 form {
     padding: 20px;
     border: 3px solid #aaa;

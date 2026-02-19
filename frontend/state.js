@@ -85,3 +85,21 @@ function validate(dto){
 
     return isValid;
 }
+
+let processedItems = items;
+
+function filterArray(filter){
+    if(filter !== "all"){
+        processedItems = items.filter(item => String(item.status) === String(filter));
+    } else {
+        processedItems = items.slice();
+    }
+}
+
+function sortArray(sort){
+    if(sort === "dateAsc"){
+        processedItems.sort((a,b) => a.date.localeCompare(b.date));
+    } else if(sort === "dateDesc"){
+        processedItems.sort((a,b) => b.date.localeCompare(a.date));
+    }
+}
