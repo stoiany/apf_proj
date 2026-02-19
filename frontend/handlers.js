@@ -76,7 +76,6 @@ form.addEventListener("click", (event) => {
         }
         const result = addItem(dto);
         if(result.success === false){ alert(result.message); return; }
-        addItem(dto);
         renderTable(items);
         clearForm();
     }
