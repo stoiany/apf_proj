@@ -1,3 +1,7 @@
-Lab #1 I suppose Var. #?
-That's my README.md file where I'll state how to run frontend and backend of my app.
+Lab #1 0.1.0
 
+var. 11 lab shifting
+
+how to run:
+1. clone repo
+2. run index.html file with browser
