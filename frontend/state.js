@@ -68,14 +68,14 @@ function validate(dto){
     if(name === ""){
         showError("nameInput", "nameError", "Обов'язкове поле.");
         isValid = false;
-    } else if(dto.username.length > 25){
-        showError("nameInput", "nameError", "Ім'я користувача не може бути більше за 25 символів.");
+    } else if(dto.username.length > 30){
+        showError("nameInput", "nameError", "Ім'я користувача не може бути більше за 30 символів.");
         isValid = false;
     }
 
     const comment = dto.comment.trim();
-    if(comment.length > 30 ){
-        showError("commentInput", "commentError", "Максимальна кількість символів: 30");
+    if(comment.length > 80){
+        showError("commentInput", "commentError", "Максимальна кількість символів: 80");
         isValid = false;
     }
     if(dto.status === ""){
