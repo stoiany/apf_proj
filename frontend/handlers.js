@@ -44,7 +44,30 @@ fieldsToValidate.forEach(field => {
 });
 
 filterInput.addEventListener("change", updateView);
-sortInput.addEventListener("change", updateView);
+sortInput.addEventListener("change", () => {
+    sortState = "date";
+    if(sortInput.value === "dateAsc"){
+        sortDirection = "asc";
+    } else {
+        sortDirection = "desc";
+    }
+    updateView();
+});
+
+const thead = document.getElementById("tableHead");
+thead.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if(target.classList.contains("dateSort")){
+        sortState = "date";
+        updateView();
+    }
+
+    if(target.classList.contains("timeSort")){
+        sortState = "time";
+        updateView();
+    }
+});
 
 const tbody = document.getElementById("itemsTableBody");
 tbody.addEventListener("click", (event) => {

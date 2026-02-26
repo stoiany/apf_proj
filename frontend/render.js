@@ -101,9 +101,7 @@ const sortInput = document.getElementById("sortInput");
 
 function updateView(){
     const filter = filterInput.value;
-    const sort = sortInput.value;
-
     filterArray(filter);
-    sortArray(sort);
+    sortArray();
     renderTable(processedItems);
 }

@@ -96,10 +96,32 @@ function filterArray(filter){
     }
 }
 
-function sortArray(sort){
-    if(sort === "dateAsc"){
-        processedItems.sort((a,b) => a.date.localeCompare(b.date));
-    } else if(sort === "dateDesc"){
-        processedItems.sort((a,b) => b.date.localeCompare(a.date));
+let sortState;
+
+let sortDirection = "desc";
+
+const tableTime = {
+    "morning": "1",
+    "day": "2",
+    "evening": "3"
+}
+
+function sortArray(){
+    if(sortState === "date"){
+        if(sortDirection === "desc"){
+            processedItems.sort((a,b) => b.date.localeCompare(a.date));
+            sortDirection = "asc";
+        } else {
+            processedItems.sort((a,b) => a.date.localeCompare(b.date));
+            sortDirection = "desc";
+        }
+    } else if(sortState === "time"){
+        if(sortDirection === "desc"){
+            processedItems.sort((a,b) => tableTime[b.time].localeCompare(tableTime[a.time]));
+            sortDirection = "asc";
+        } else {
+            processedItems.sort((a,b) => tableTime[a.time].localeCompare(tableTime[b.time]));
+            sortDirection = "desc";
+        }
     }
 }
