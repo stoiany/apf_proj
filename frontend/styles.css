@@ -67,6 +67,14 @@ th {
     background: #fff;
 }
 
+#list-of-users td {
+    padding: 0 2ex 0 2ex;
+}
+
+#list-of-users table {
+    width: inherit;
+}
+
 .invalid {
     border-color: #c00 !important;
 }
@@ -99,7 +107,7 @@ th {
 
 .buttons {
     display: flex;
-    margin-top: 12px;
+    margin-bottom: 12px;
     gap: 8px;
 }
 

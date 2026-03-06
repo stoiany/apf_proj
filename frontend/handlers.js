@@ -123,4 +123,13 @@ form.addEventListener("click", (event) => {
         clearForm();
         startForm();
     }
+
+    if(target.classList.contains("users-button")){
+        renderList(items);
+    }
+
+    if(target.classList.contains("shifts-button")){
+        const shiftTime = document.getElementById("userListTimeSelect").value;
+        renderTop2User(items, shiftTime);
+    }
 });

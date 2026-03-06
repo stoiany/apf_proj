@@ -61,6 +61,22 @@
             <div class="buttons" id="actionButtons">
                 <button type="submit" class="submit-button">Підтвердити</button>
                 <button type="button" class="reset-button">Стерти</button>
+                <button type="button" class="users-button">Користувачі</button>
+                <button type="button" class="shifts-button">Топ 2 (за часом)</button>
+            </div>
+
+            <div class="field">
+                <label for="userListTimeSelect">Оберіть час для топ 2</label>
+                <select id="userListTimeSelect">
+                    <option value="">Виберіть час чергування</option>
+                    <option value="morning">8:00 — 12:00</option>
+                    <option value="day">12:00 — 16:00</option>
+                    <option value="evening">16:00 — 20:00</option>
+                </select>
+            </div>
+
+            <div class="users" id="list-of-users">
+
             </div>
         </form>
 

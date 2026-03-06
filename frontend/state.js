@@ -96,6 +96,31 @@ function filterArray(filter){
     }
 }
 
+function filterByTime(time, items){
+    let users;
+    if(time !== ""){
+        users = items.filter(item => String(item.time) === String(time));
+    } else {
+        users = items.slice();
+    }
+    return users;
+}
+
+function uniqueUsersObject(items){
+    let users = {};
+    for(let i=0; i<items.length; i++){
+        if(!users[items[i].username]) users[items[i].username] = [];
+        users[items[i].username].push(items[i]);
+    }
+    return users;
+}
+
+function top2User(users){
+    let uniqueUsers = Object.entries(uniqueUsersObject(users)).map(([user, shifts]) => [user, shifts.length]);
+    uniqueUsers.sort((a,b) => b[1]-a[1]);
+    return uniqueUsers[1];
+}
+
 let sortState;
 
 let sortDirection = "desc";

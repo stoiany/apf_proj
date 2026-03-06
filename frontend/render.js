@@ -56,6 +56,8 @@ function startForm(){
     btns.innerHTML = `
             <button type="submit" class="submit-button">Підтвердити</button>
             <button type="button" class="reset-button">Стерти</button>
+            <button type="button" class="users-button">Користувачі</button>
+            <button type="button" class="shifts-button">Топ 2 (за часом)</button>
     `;
 }
 
@@ -94,6 +96,35 @@ function renderTable(items) {
                 </td>
             </tr>
         `).join("");
+}
+
+function renderList(items){
+    const list = document.getElementById("list-of-users");
+    let users = uniqueUsersObject(items);
+    list.innerHTML = Object.entries(users).map(([name, shifts]) => {
+        let s = shifts.map(shift => `
+        <tr>
+            <td>${shift.date}</td>
+            <td>${shift.time}</td>
+            <td>${shift.status}</td>
+        </tr>
+        `).join("");
+        return `
+        <div>${name} <table> ${s} </table></div></br>
+    `
+    }).join("");
+}
+
+function renderTop2User(items){
+    const list = document.getElementById("list-of-users");
+    const time = document.getElementById("userListTimeSelect").value;
+    if(time === ""){
+        alert("Не було вибрано час.");
+        return;
+    }
+    const user = top2User(filterByTime(time, items));
+
+    list.innerHTML = `Другий за кількістю змін по обраному часу: ${user[0]}: ${user[1]}`
 }
 
 const filterInput = document.getElementById("filterInput");
