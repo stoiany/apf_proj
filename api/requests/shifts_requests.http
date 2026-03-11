@@ -1,0 +1,32 @@
+### GET all shifts
+GET http://localhost:3000/api/shifts
+
+### GET shift by id
+GET http://localhost:3000/api/shifts/1773058654133
+
+### POST shift
+POST http://localhost:3000/api/shifts
+Content-Type: application/json
+
+{
+  "username": "Yaroslav Stoian",
+  "date": "2026-03-02",
+  "time": "evening",
+  "status": "completed",
+  "comment": "Maybe"
+}
+
+### PUT shift
+PUT http://localhost:3000/api/shifts/1773058654133
+Content-Type: application/json
+
+{
+  "username": "Marlboro",
+  "date": "2026-04-20",
+  "time": "evening",
+  "status": "missed",
+  "comment": "fff"
+}
+
+### DELETE shift
+DELETE http://localhost:3000/api/shifts/1773058654133
