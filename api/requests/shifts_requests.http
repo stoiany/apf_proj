@@ -9,11 +9,11 @@ POST http://localhost:3000/api/shifts
 Content-Type: application/json
 
 {
-  "username": "Yaroslav Stoian",
-  "date": "2026-03-02",
-  "time": "evening",
-  "status": "completed",
-  "comment": "Maybe"
+  "username": "Vova",
+  "date": "2026-04-02",
+  "time": "day",
+  "status": "missed",
+  "comment": "asdasd"
 }
 
 ### PUT shift
