@@ -5,6 +5,9 @@ import {Request} from "express";
 import crypto from "crypto";
 import {createShiftDto, shiftResponseDto, updateShiftDto} from "../schemas/shift.schemas";
 
+export type ShiftTime = "morning" | "day" | "evening";
+export type ShiftStatus = "scheduled" | "completed" | "missed";
+
 export function readShifts(){
     return shifts.map((item) => {
         const user = users.find(u => u.id === item.userId);
@@ -142,8 +145,8 @@ export function updateShift(dto : updateShiftDto, targetId : string) : shiftResp
         id: item.id,
         username: dtoUsername,
         date: item.date,
-        time: item.time as ("morning" | "evening" | "day"),
-        status: item.status as ("missed" | "scheduled" | "completed"),
+        time: item.time as ShiftTime,
+        status: item.status as ShiftStatus,
         comment: item.comment,
         createdAt: item.createdAt
     }
