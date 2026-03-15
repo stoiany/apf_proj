@@ -1,6 +1,9 @@
 import {users} from "../repositories/users.repo";
 import {ApiError} from "../middleware/ApiError.class";
 import {Request} from "express";
+import {createUserDto, updateUserDto, userResponseDto} from "../schemas/users.schemas";
+import crypto from "crypto";
+import {shifts} from "../repositories/shifts.repo";
 
 export function readUsers(){
     return users.map(user => {
@@ -22,4 +25,58 @@ export function readUserById(req: Request){
         id: user.id,
         username: user.username,
     }
+}
+
+export function createUser (dto : createUserDto) : userResponseDto {
+    const user = users.find(u => u.username === dto.username);
+    if(user){
+        throw new ApiError(409, "USERNAME_CONFLICT", "User with that name already exists.");
+    }
+
+    const newUser = {
+        id: crypto.randomUUID(),
+        username: dto.username,
+    }
+    users.push(newUser);
+    return {
+        id: newUser.id,
+        username: dto.username,
+    }
+}
+
+export function updateUser (dto : updateUserDto, targetId : string) : userResponseDto {
+    const indexInArray = users.findIndex(u => u.id === targetId);
+    if(indexInArray === -1){
+        throw new ApiError(404, "NOT_FOUND", "User with that ID was not found.");
+    }
+
+    const isConflict = users.find(u => u.username === dto.username);
+    if(isConflict){
+        throw new ApiError(409, "USERNAME_CONFLICT", "User with that name already exists.");
+    }
+
+    let user = users[indexInArray];
+    user.username = dto.username;
+    users[indexInArray] = user;
+
+    return {
+        id: user.id,
+        username: dto.username,
+    }
+}
+
+export function removeUser (req: Request){
+    const targetId = req.params.id;
+    const indexInArray = users.findIndex(u => u.id === targetId);
+
+    if(indexInArray === -1){
+        throw new ApiError(404, "NOT_FOUND", "User with that ID was not found.");
+    }
+
+    const isReferenced = shifts.some(i => i.userId === targetId);
+    if(isReferenced){
+        throw new ApiError(409, "CONFLICT", "Cannot delete user. This user has existing shifts assigned to them.");
+    }
+
+    users.splice(indexInArray, 1);
 }
