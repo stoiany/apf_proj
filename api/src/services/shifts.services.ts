@@ -88,8 +88,7 @@ export function createShift(dto: createShiftDto) : shiftResponseDto {
     };
 }
 
-export function updateShift(dto : updateShiftDto) : shiftResponseDto {
-    const targetId = dto.id;
+export function updateShift(dto : updateShiftDto, targetId : string) : shiftResponseDto {
     const indexInArray = shifts.findIndex(item => item.id === targetId);
 
     if(indexInArray === -1){

@@ -11,7 +11,6 @@ export const createShiftSchema = z.object({
 export type createShiftDto = z.infer<typeof createShiftSchema>;
 
 export const updateShiftSchema = z.object({
-    id: z.uuid("Invalid ID format. Must be a valid UUID."),
     username: z.string().min(1).max(30).optional(),
     date: z.iso.date("Date must be a real date in YYYY-MM-DD format").optional(),
     time: z.enum(["morning", "day", "evening"], "Time must be one of those: morning, day, evening.").optional(),

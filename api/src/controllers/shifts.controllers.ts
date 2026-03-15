@@ -19,8 +19,9 @@ export function postShift(req: Request, res: Response){
 }
 
 export function putShift(req: Request, res: Response){
+    const targetId = req.params.id as string;
     const dto : updateShiftDto = req.body;
-    const responseDto = updateShift(dto);
+    const responseDto = updateShift(dto, targetId);
     res.status(200).json(responseDto);
 }
 
