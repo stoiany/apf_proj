@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3000/api
+
+### GET all swap requests
+GET {{baseUrl}}/swapRequests
+
+### Get swap request by id
+GET {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24
+
+### POST swap request
+POST {{baseUrl}}/swapRequests
+Content-Type: application/json
+
+{
+  "requester": "Vova",
+  "targetUser": "Yaroslav Stoian",
+  "shiftId": "e409299e-8501-4be4-b4fa-8b06ab0fa25e"
+}
+
+### PUT swap request
+PUT {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24
+Content-Type: application/json
+
+{
+  "requester": "Vova",
+  "targetUser": "Yaroslav Stoian",
+  "shiftId": "e409299e-8501-4be4-b4fa-8b06ab0fa25e",
+  "status": "approved"
+}
+
+### DELETE swap req
+DELETE {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24

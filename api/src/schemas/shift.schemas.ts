@@ -14,7 +14,7 @@ export const updateShiftSchema = z.object({
     username: z.string().min(1).max(30).optional(),
     date: z.iso.date("Date must be a real date in YYYY-MM-DD format").optional(),
     time: z.enum(["morning", "day", "evening"], "Time must be one of those: morning, day, evening.").optional(),
-    status: z.enum(["scheduled", "completed", "missed"], "Status must be one of those: scheduled, completed, missed.").optional(),
+    status: z.enum(["scheduled", "completed", "missed", "canceled"], "Status must be one of those: scheduled, completed, missed, canceled.").optional(),
     comment: z.string().max(80).optional(),
 })
 

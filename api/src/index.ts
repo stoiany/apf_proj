@@ -3,6 +3,7 @@ import {errorHandler, pathHandler} from "./middleware/error-handler.middleware";
 import {loggingMiddleware} from "./middleware/logging.middleware";
 import {shiftRouter} from "./routes/shifts.routes";
 import {userRouter} from "./routes/users.routes";
+import {swapRequestsRouter} from "./routes/swapRequests.routes";
 
 const app = express();
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(loggingMiddleware);
 
 app.use("/api/shifts", shiftRouter);
 app.use("/api/users", userRouter);
+app.use("/api/swapRequests", swapRequestsRouter);
 
 app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ ok: true });

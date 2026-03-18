@@ -49,7 +49,8 @@ export function createShift(dto: createShiftDto) : shiftResponseDto {
 
     const isCollision = shifts.some(s =>
         s.date === targetDate &&
-        s.time === targetTime
+        s.time === targetTime &&
+        s.status !== "canceled"
     );
 
     if(isCollision) {
@@ -107,7 +108,8 @@ export function updateShift(dto : updateShiftDto, targetId : string) : shiftResp
         const isCollision = shifts.some(s =>
             s.date === targetDate &&
             s.time === targetTime &&
-            s.id !== item.id
+            s.id !== item.id &&
+            s.status !== "canceled"
         );
 
         if(isCollision) {
