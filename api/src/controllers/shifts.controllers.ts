@@ -3,7 +3,11 @@ import {createShift, readShiftById, readShifts, removeShift, updateShift} from "
 import {createShiftDto, updateShiftDto} from "../schemas/shift.schemas";
 
 export function getShifts(req: Request, res: Response){
-    const dtoArray = readShifts();
+    const sortBy = req.query.sortBy as string;
+    const sortDir = req.query.sortDir as string;
+    const status = req.query.status as string;
+    const userId = req.query.userId as string;
+    const dtoArray = readShifts(sortBy, sortDir, status, userId);
     res.status(200).json(dtoArray);
 }
 

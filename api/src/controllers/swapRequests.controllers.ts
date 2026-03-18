@@ -8,7 +8,12 @@ import {
 import {createSwapRequestDto, swapRequestResponseDto, updateSwapRequestDto} from "../schemas/swapRequest.schemas";
 
 export function getSwapRequests(req: Request, res: Response){
-    const dtoArray = readSwapRequests();
+    const sortBy = req.query.sortBy as string;
+    const sortDir = req.query.sortDir as string;
+    const requesterId = req.query.requesterId as string;
+    const targetUserId = req.query.targetUserId as string;
+    const status = req.query.status as string;
+    const dtoArray = readSwapRequests(sortBy, sortDir, requesterId, targetUserId, status);
     res.status(200).json(dtoArray);
 }
 

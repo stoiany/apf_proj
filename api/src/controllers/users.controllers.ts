@@ -3,7 +3,9 @@ import {Request, Response} from "express";
 import {createUserDto, updateUserDto} from "../schemas/users.schemas";
 
 export function getUsers(req: Request, res: Response){
-    const dtoArray = readUsers();
+    const sortBy = req.query.sortBy as string;
+    const sortDir = req.query.sortDir as string;
+    const dtoArray = readUsers(sortBy, sortDir);
     res.status(200).json(dtoArray);
 }
 

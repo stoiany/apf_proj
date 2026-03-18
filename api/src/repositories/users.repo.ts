@@ -6,5 +6,13 @@ export let users = [
     {
         "id": "8d485c4c-3e69-4438-9f2f-a1f3dbb42ead",
         "username": "Vova"
+    },
+    {
+        "id": "310475d3-04fc-4600-b9e3-7e66d19bb3bf",
+        "username": "Dmytro"
+    },
+    {
+        "id": "f47461ab-7c91-4e79-8573-5fb51dd79ed2",
+        "username": "Ihor"
     }
 ]

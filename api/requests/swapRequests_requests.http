@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000/api
 
 ### GET all swap requests
-GET {{baseUrl}}/swapRequests
+GET {{baseUrl}}/swapRequests?sortBy=createdAt&sortDir=asc&status=approved
 
 ### Get swap request by id
 GET {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24
@@ -11,9 +11,9 @@ POST {{baseUrl}}/swapRequests
 Content-Type: application/json
 
 {
-  "requester": "Vova",
+  "requester": "Ihor",
   "targetUser": "Yaroslav Stoian",
-  "shiftId": "e409299e-8501-4be4-b4fa-8b06ab0fa25e"
+  "shiftId": "1e1155eb-0c2e-4631-981e-4c5ccd7bdbf5"
 }
 
 ### PUT swap request
@@ -21,8 +21,8 @@ PUT {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24
 Content-Type: application/json
 
 {
-  "requester": "Vova",
-  "targetUser": "Yaroslav Stoian",
+  "requester": "Yaroslav Stoian",
+  "targetUser": "Vova",
   "shiftId": "e409299e-8501-4be4-b4fa-8b06ab0fa25e",
   "status": "approved"
 }

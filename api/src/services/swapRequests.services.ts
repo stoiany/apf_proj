@@ -6,8 +6,20 @@ import {shifts} from "../repositories/shifts.repo";
 
 export type SwapStatus = "pending" | "approved" | "rejected";
 
-export function readSwapRequests() : swapRequestResponseDto[] {
-    return swapRequests.map((item) => {
+export function readSwapRequests(sortBy : string, sortDir : string, requesterId : string, targetUserId : string, status : string) : swapRequestResponseDto[] {
+    let processedArray = swapRequests;
+
+    if(requesterId){
+        processedArray = processedArray.filter(s => s.requesterId === requesterId);
+    }
+    if(targetUserId){
+        processedArray = processedArray.filter(s => s.targetUserId === targetUserId);
+    }
+    if(status){
+        processedArray = processedArray.filter(s => s.status === status);
+    }
+
+    const mappedArray = processedArray.map((item) => {
         const requester = users.find(u => item.requesterId === u.id);
         const targetUser = users.find(u => item.targetUserId === u.id);
         return {
@@ -19,6 +31,35 @@ export function readSwapRequests() : swapRequestResponseDto[] {
             createdAt: item.createdAt,
         }
     });
+
+    if (!sortBy) {
+        return mappedArray;
+    }
+
+    mappedArray.sort((a, b) => {
+        let comparison: number;
+
+        const valueA = a[sortBy as keyof typeof a];
+        const valueB = b[sortBy as keyof typeof b];
+
+        if (sortBy === "createdAt") {
+            const timeA = new Date(valueA as string).getTime();
+            const timeB = new Date(valueB as string).getTime();
+            comparison = timeA - timeB;
+        } else {
+            const strA = String(valueA || "");
+            const strB = String(valueB || "");
+            comparison = strA.localeCompare(strB);
+        }
+
+        if (sortDir === "desc") {
+            return comparison * -1;
+        }
+
+        return comparison;
+    });
+
+    return mappedArray;
 }
 
 export function readSwapRequestById(targetId : string) : swapRequestResponseDto {

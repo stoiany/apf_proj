@@ -5,13 +5,36 @@ import {createUserDto, updateUserDto, userResponseDto} from "../schemas/users.sc
 import crypto from "crypto";
 import {shifts} from "../repositories/shifts.repo";
 
-export function readUsers(){
-    return users.map(user => {
+export function readUsers(sortBy : string, sortDir : string) : userResponseDto[] {
+    const mappedArray = users.map(user => {
         return {
             id: user.id,
             username: user.username,
         };
     });
+
+    if (!sortBy) {
+        return mappedArray;
+    }
+
+    mappedArray.sort((a, b) => {
+        let comparison: number;
+
+        const valueA = a[sortBy as keyof typeof a];
+        const valueB = b[sortBy as keyof typeof b];
+
+        const strA = String(valueA || "");
+        const strB = String(valueB || "");
+        comparison = strA.localeCompare(strB);
+
+        if (sortDir === "desc") {
+            return comparison * -1;
+        }
+
+        return comparison;
+    });
+
+    return mappedArray;
 }
 
 export function readUserById(req: Request){

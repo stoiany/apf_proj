@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000/api
 ### GET all shifts
-GET {{baseUrl}}/shifts
+GET {{baseUrl}}/shifts?sortBy=date&status=scheduled&userId=310475d3-04fc-4600-b9e3-7e66d19bb3bf
 
 ### GET shift by id
 GET {{baseUrl}}/shifts/1773058654133
@@ -10,11 +10,10 @@ POST {{baseUrl}}/shifts
 Content-Type: application/json
 
 {
-  "username": "Vova",
-  "date": "2026-02-02",
-  "time": "day",
-  "status": "missed",
-  "comment": "asdasd"
+  "username": "Ihor",
+  "date": "2026-03-03",
+  "time": "evening",
+  "status": "scheduled"
 }
 
 ### PUT shift

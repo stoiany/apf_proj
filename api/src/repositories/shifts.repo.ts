@@ -16,5 +16,50 @@ export let shifts = [
         "status": "missed",
         "comment": "asdasd",
         "createdAt": "2026-03-15T16:11:30.859Z"
+    },
+    {
+        "id": "74b2248a-f17b-438d-8c30-e6c24777f798",
+        "userId": "310475d3-04fc-4600-b9e3-7e66d19bb3bf",
+        "date": "2026-03-02",
+        "time": "day",
+        "status": "scheduled",
+        "comment": "",
+        "createdAt": "2026-03-18T14:11:58.900Z"
+    },
+    {
+        "id": "2bc8ed21-3a4b-4bd6-b314-4dadd3e66bf7",
+        "userId": "310475d3-04fc-4600-b9e3-7e66d19bb3bf",
+        "date": "2026-03-03",
+        "time": "day",
+        "status": "scheduled",
+        "comment": "",
+        "createdAt": "2026-03-18T14:12:12.340Z"
+    },
+    {
+        "id": "8d29c171-2ae8-42fe-98c9-a4a0f3b05ec3",
+        "userId": "310475d3-04fc-4600-b9e3-7e66d19bb3bf",
+        "date": "2026-03-03",
+        "time": "morning",
+        "status": "scheduled",
+        "comment": "",
+        "createdAt": "2026-03-18T14:12:20.694Z"
+    },
+    {
+        "id": "ca151009-5e46-47f6-904f-2da0fea85426",
+        "userId": "f47461ab-7c91-4e79-8573-5fb51dd79ed2",
+        "date": "2026-03-02",
+        "time": "morning",
+        "status": "scheduled",
+        "comment": "",
+        "createdAt": "2026-03-18T14:12:33.595Z"
+    },
+    {
+        "id": "1e1155eb-0c2e-4631-981e-4c5ccd7bdbf5",
+        "userId": "f47461ab-7c91-4e79-8573-5fb51dd79ed2",
+        "date": "2026-03-03",
+        "time": "evening",
+        "status": "scheduled",
+        "comment": "",
+        "createdAt": "2026-03-18T14:12:42.594Z"
     }
 ];

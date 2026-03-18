@@ -8,19 +8,58 @@ import {createShiftDto, shiftResponseDto, updateShiftDto} from "../schemas/shift
 export type ShiftTime = "morning" | "day" | "evening";
 export type ShiftStatus = "scheduled" | "completed" | "missed";
 
-export function readShifts(){
-    return shifts.map((item) => {
+export function readShifts(sortBy : string, sortDir : string, statusFilter : string, userIdFilter : string) : shiftResponseDto[] {
+    let processedArray = shifts;
+
+    if(statusFilter){
+        processedArray = processedArray.filter(s => s.status === statusFilter);
+    }
+
+    if(userIdFilter){
+        processedArray = processedArray.filter(s => s.userId === userIdFilter);
+    }
+
+    const mappedArray = processedArray.map((item) => {
         const user = users.find(u => u.id === item.userId);
         return {
             id: item.id,
             username: user ? user.username : "User not found.",
             date: item.date,
-            time: item.time,
-            status: item.status,
+            time: item.time as ShiftTime,
+            status: item.status as ShiftStatus,
             comment: item.comment,
             createdAt: item.createdAt,
         }
     });
+
+    if (!sortBy) {
+        return mappedArray;
+    }
+
+    mappedArray.sort((a, b) => {
+        let comparison: number;
+
+        const valueA = a[sortBy as keyof typeof a];
+        const valueB = b[sortBy as keyof typeof b];
+
+        if (sortBy === "date" || sortBy === "createdAt") {
+            const timeA = new Date(valueA as string).getTime();
+            const timeB = new Date(valueB as string).getTime();
+            comparison = timeA - timeB;
+        } else {
+            const strA = String(valueA || "");
+            const strB = String(valueB || "");
+            comparison = strA.localeCompare(strB);
+        }
+
+        if (sortDir === "desc") {
+            return comparison * -1;
+        }
+
+        return comparison;
+    });
+
+    return mappedArray;
 }
 
 export function readShiftById(req: Request){
