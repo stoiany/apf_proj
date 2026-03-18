@@ -13,13 +13,20 @@ export function errorHandler(
             message: err.message,
             details: err.details,
         });
-    } else {
-        console.log("500: ", err);
-        return res.status(500).json({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Щось пішло не так на сервері.",
+    }
+
+    if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
+        return res.status(400).json({
+            code: "INVALID_JSON",
+            message: "Некоректний формат JSON у тілі запиту.",
         });
     }
+
+    console.log("500: ", err);
+    return res.status(500).json({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Щось пішло не так на сервері.",
+    });
 }
 
 export function pathHandler(_req: Request, _res: Response, next: NextFunction) {

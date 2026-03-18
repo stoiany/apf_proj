@@ -10,9 +10,8 @@ import { swapRequestsRouter } from "./routes/swapRequests.routes";
 import { schedulesRouter } from "./routes/schedules.routes";
 
 const app = express();
-app.use(express.json());
-
 app.use(loggingMiddleware);
+app.use(express.json());
 
 app.use("/api/shifts", shiftRouter);
 app.use("/api/users", userRouter);

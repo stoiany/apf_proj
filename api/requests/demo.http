@@ -1,0 +1,74 @@
+@baseUrl = http://localhost:3000
+
+### Health: перевірка чи живий сервер
+GET {{baseUrl}}/health
+
+### Успішно: отримати всіх користувачів
+GET {{baseUrl}}/api/users
+
+### Успішно: отримати список змін із query-параметрами (фільтрація та сортування)
+GET {{baseUrl}}/api/shifts?status=scheduled&sortBy=date&sortDir=desc
+
+### Успішно: створити нову зміну
+POST {{baseUrl}}/api/shifts
+Content-Type: application/json
+
+{
+  "username": "Ihor",
+  "date": "2026-05-15",
+  "time": "evening",
+  "status": "scheduled",
+  "comment": "Тестова зміна для демо"
+}
+
+### Помилка 404: сутність не знайдена по ID
+GET {{baseUrl}}/api/users/fake-id-999
+
+### Помилка 400: обов'язкове поле відсутнє (валідація Zod)
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+  "email": "test@test.com"
+}
+
+### Помилка 400: неправильний формат даних / enum (неіснуючий час)
+POST {{baseUrl}}/api/shifts
+Content-Type: application/json
+
+{
+  "username": "Vova",
+  "date": "2026-03-03",
+  "time": "night",
+  "status": "scheduled"
+}
+
+### Помилка 409: конфлікт (дубльоване ім'я користувача)
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+  "username": "Vova"
+}
+
+### Помилка 409: конфлікт часу (зміна на цю дату і час вже існує в базі)
+POST {{baseUrl}}/api/shifts
+Content-Type: application/json
+
+{
+  "username": "Dmytro",
+  "date": "2026-03-02",
+  "time": "day",
+  "status": "scheduled"
+}
+
+### Помилка 404: маршрут не знайдено (перевірка pathHandler)
+GET {{baseUrl}}/api/something-unknown
+
+### Помилка 400: битий JSON (зайва кома в кінці)
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+  "username": "Broken JSON",
+}
