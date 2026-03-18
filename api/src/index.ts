@@ -1,10 +1,13 @@
 import express, { Request, Response } from "express";
-import {errorHandler, pathHandler} from "./middleware/error-handler.middleware";
-import {loggingMiddleware} from "./middleware/logging.middleware";
-import {shiftRouter} from "./routes/shifts.routes";
-import {userRouter} from "./routes/users.routes";
-import {swapRequestsRouter} from "./routes/swapRequests.routes";
-import {schedulesRouter} from "./routes/schedules.routes";
+import {
+    errorHandler,
+    pathHandler,
+} from "./middleware/error-handler.middleware";
+import { loggingMiddleware } from "./middleware/logging.middleware";
+import { shiftRouter } from "./routes/shifts.routes";
+import { userRouter } from "./routes/users.routes";
+import { swapRequestsRouter } from "./routes/swapRequests.routes";
+import { schedulesRouter } from "./routes/schedules.routes";
 
 const app = express();
 app.use(express.json());

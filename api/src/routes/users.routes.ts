@@ -1,7 +1,13 @@
-import {Router} from "express";
-import {deleteUser, getUserById, getUsers, postUser, putUser} from "../controllers/users.controllers";
-import {validate} from "../middleware/validation";
-import {createUserSchema, updateUserSchema} from "../schemas/users.schemas";
+import { Router } from "express";
+import {
+    deleteUser,
+    getUserById,
+    getUsers,
+    postUser,
+    putUser,
+} from "../controllers/users.controllers";
+import { validate } from "../middleware/validation";
+import { createUserSchema, updateUserSchema } from "../schemas/users.schemas";
 
 export const userRouter = Router();
 

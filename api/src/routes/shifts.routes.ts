@@ -1,7 +1,13 @@
-import {Router} from "express";
-import {postShift, deleteShift, getShifts, getShiftById, putShift} from "../controllers/shifts.controllers";
-import {validate} from "../middleware/validation";
-import {createShiftSchema, updateShiftSchema} from "../schemas/shift.schemas";
+import { Router } from "express";
+import {
+    postShift,
+    deleteShift,
+    getShifts,
+    getShiftById,
+    putShift,
+} from "../controllers/shifts.controllers";
+import { validate } from "../middleware/validation";
+import { createShiftSchema, updateShiftSchema } from "../schemas/shift.schemas";
 
 export const shiftRouter = Router();
 

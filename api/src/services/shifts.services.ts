@@ -1,26 +1,39 @@
-import {shifts} from "../repositories/shifts.repo";
-import {users} from "../repositories/users.repo";
-import {ApiError} from "../middleware/ApiError.class";
-import {Request} from "express";
+import { shifts } from "../repositories/shifts.repo";
+import { users } from "../repositories/users.repo";
+import { ApiError } from "../middleware/ApiError.class";
+import { Request } from "express";
 import crypto from "crypto";
-import {createShiftDto, shiftResponseDto, updateShiftDto} from "../schemas/shift.schemas";
+import {
+    createShiftDto,
+    shiftResponseDto,
+    updateShiftDto,
+} from "../schemas/shift.schemas";
 
 export type ShiftTime = "morning" | "day" | "evening";
 export type ShiftStatus = "scheduled" | "completed" | "missed";
 
-export function readShifts(sortBy : string, sortDir : string, statusFilter : string, userIdFilter : string) : shiftResponseDto[] {
+export function readShifts(
+    sortBy: string,
+    sortDir: string,
+    statusFilter: string,
+    userIdFilter: string,
+): shiftResponseDto[] {
     let processedArray = shifts;
 
-    if(statusFilter){
-        processedArray = processedArray.filter(s => s.status === statusFilter);
+    if (statusFilter) {
+        processedArray = processedArray.filter(
+            (s) => s.status === statusFilter,
+        );
     }
 
-    if(userIdFilter){
-        processedArray = processedArray.filter(s => s.userId === userIdFilter);
+    if (userIdFilter) {
+        processedArray = processedArray.filter(
+            (s) => s.userId === userIdFilter,
+        );
     }
 
     const mappedArray = processedArray.map((item) => {
-        const user = users.find(u => u.id === item.userId);
+        const user = users.find((u) => u.id === item.userId);
         return {
             id: item.id,
             username: user ? user.username : "User not found.",
@@ -29,7 +42,7 @@ export function readShifts(sortBy : string, sortDir : string, statusFilter : str
             status: item.status as ShiftStatus,
             comment: item.comment,
             createdAt: item.createdAt,
-        }
+        };
     });
 
     if (!sortBy) {
@@ -62,14 +75,18 @@ export function readShifts(sortBy : string, sortDir : string, statusFilter : str
     return mappedArray;
 }
 
-export function readShiftById(req: Request){
+export function readShiftById(req: Request) {
     const targetId = req.params.id;
-    const item = shifts.find(item => item.id === targetId);
+    const item = shifts.find((item) => item.id === targetId);
 
-    if(!item){
-        throw new ApiError(404, "NOT_FOUND", "Shift with that ID was not found.");
+    if (!item) {
+        throw new ApiError(
+            404,
+            "NOT_FOUND",
+            "Shift with that ID was not found.",
+        );
     }
-    const user = users.find(u => u.id === item.userId);
+    const user = users.find((u) => u.id === item.userId);
     return {
         id: item.id,
         username: user ? user.username : "User not found.",
@@ -78,31 +95,35 @@ export function readShiftById(req: Request){
         status: item.status,
         comment: item.comment,
         createdAt: item.createdAt,
-    }
+    };
 }
 
-export function createShift(dto: createShiftDto) : shiftResponseDto {
-
+export function createShift(dto: createShiftDto): shiftResponseDto {
     const targetDate = dto.date;
     const targetTime = dto.time;
 
-    const isCollision = shifts.some(s =>
-        s.date === targetDate &&
-        s.time === targetTime &&
-        s.status !== "canceled"
+    const isCollision = shifts.some(
+        (s) =>
+            s.date === targetDate &&
+            s.time === targetTime &&
+            s.status !== "canceled",
     );
 
-    if(isCollision) {
-        throw new ApiError(409, "TIME_CONFLICT", "Shift on that date and time already exists.")
+    if (isCollision) {
+        throw new ApiError(
+            409,
+            "TIME_CONFLICT",
+            "Shift on that date and time already exists.",
+        );
     }
 
-    const user = users.find(u => u.username === dto.username);
+    const user = users.find((u) => u.username === dto.username);
     let userId;
-    if(!user) {
+    if (!user) {
         const newUser = {
             id: crypto.randomUUID(),
             username: dto.username,
-        }
+        };
         users.push(newUser);
         userId = newUser.id;
     } else {
@@ -116,7 +137,7 @@ export function createShift(dto: createShiftDto) : shiftResponseDto {
         time: dto.time,
         status: dto.status,
         comment: dto.comment,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
     };
     shifts.push(item);
 
@@ -127,43 +148,55 @@ export function createShift(dto: createShiftDto) : shiftResponseDto {
         time: dto.time,
         status: dto.status,
         comment: dto.comment,
-        createdAt: item.createdAt
+        createdAt: item.createdAt,
     };
 }
 
-export function updateShift(dto : updateShiftDto, targetId : string) : shiftResponseDto {
-    const indexInArray = shifts.findIndex(item => item.id === targetId);
+export function updateShift(
+    dto: updateShiftDto,
+    targetId: string,
+): shiftResponseDto {
+    const indexInArray = shifts.findIndex((item) => item.id === targetId);
 
-    if(indexInArray === -1){
-        throw new ApiError(404, "NOT_FOUND", "Shift with that ID was not found.");
+    if (indexInArray === -1) {
+        throw new ApiError(
+            404,
+            "NOT_FOUND",
+            "Shift with that ID was not found.",
+        );
     }
 
-    let item = shifts[indexInArray];
+    const item = shifts[indexInArray];
 
-    const targetDate : string = dto.date !== undefined ? dto.date : item.date;
-    const targetTime : string = dto.time !== undefined ? dto.time : item.time;
+    const targetDate: string = dto.date !== undefined ? dto.date : item.date;
+    const targetTime: string = dto.time !== undefined ? dto.time : item.time;
 
-    if(dto.date !== undefined || dto.time !== undefined){
-        const isCollision = shifts.some(s =>
-            s.date === targetDate &&
-            s.time === targetTime &&
-            s.id !== item.id &&
-            s.status !== "canceled"
+    if (dto.date !== undefined || dto.time !== undefined) {
+        const isCollision = shifts.some(
+            (s) =>
+                s.date === targetDate &&
+                s.time === targetTime &&
+                s.id !== item.id &&
+                s.status !== "canceled",
         );
 
-        if(isCollision) {
-            throw new ApiError(409, "TIME_CONFLICT", "Shift on that date and time already exists.")
+        if (isCollision) {
+            throw new ApiError(
+                409,
+                "TIME_CONFLICT",
+                "Shift on that date and time already exists.",
+            );
         }
     }
 
     let dtoUsername;
-    if(dto.username !== undefined){
-        const user = users.find(u => u.username === dto.username);
+    if (dto.username !== undefined) {
+        const user = users.find((u) => u.username === dto.username);
         if (!user) {
             const newUser = {
                 id: crypto.randomUUID(),
                 username: dto.username,
-            }
+            };
             users.push(newUser);
             item.userId = newUser.id;
         } else {
@@ -171,14 +204,14 @@ export function updateShift(dto : updateShiftDto, targetId : string) : shiftResp
         }
         dtoUsername = dto.username;
     } else {
-        const user = users.find(u => u.id === item.userId);
+        const user = users.find((u) => u.id === item.userId);
         dtoUsername = user ? user.username : "Not found";
     }
 
-    if(dto.status !== undefined) item.status = dto.status;
-    if(dto.date !== undefined) item.date = dto.date;
-    if(dto.time !== undefined) item.time = dto.time;
-    if(dto.comment !== undefined) item.comment = dto.comment;
+    if (dto.status !== undefined) item.status = dto.status;
+    if (dto.date !== undefined) item.date = dto.date;
+    if (dto.time !== undefined) item.time = dto.time;
+    if (dto.comment !== undefined) item.comment = dto.comment;
 
     shifts[indexInArray] = item;
 
@@ -189,16 +222,20 @@ export function updateShift(dto : updateShiftDto, targetId : string) : shiftResp
         time: item.time as ShiftTime,
         status: item.status as ShiftStatus,
         comment: item.comment,
-        createdAt: item.createdAt
-    }
+        createdAt: item.createdAt,
+    };
 }
 
-export function removeShift(req: Request){
+export function removeShift(req: Request) {
     const targetId = req.params.id;
-    const indexInArray = shifts.findIndex(item => item.id === targetId);
+    const indexInArray = shifts.findIndex((item) => item.id === targetId);
 
-    if(indexInArray === -1){
-        throw new ApiError(404, "NOT_FOUND", "Shift with that ID was not found.");
+    if (indexInArray === -1) {
+        throw new ApiError(
+            404,
+            "NOT_FOUND",
+            "Shift with that ID was not found.",
+        );
     }
 
     shifts.splice(indexInArray, 1);
