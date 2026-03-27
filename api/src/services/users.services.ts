@@ -1,15 +1,15 @@
 import { users } from "../repositories/users.repo";
 import { ApiError } from "../middleware/ApiError.class";
-import { Request } from "express";
 import {
     createUserDto,
-    updateUserDto,
+    updateUserDto, userQueryParamsDto,
     userResponseDto,
 } from "../schemas/users.schemas";
 import crypto from "crypto";
 import { shifts } from "../repositories/shifts.repo";
+import {targetIdDto} from "../schemas/other.schemas";
 
-export function readUsers(sortBy: string, sortDir: string): userResponseDto[] {
+export function readUsers(dto : userQueryParamsDto): userResponseDto[] {
     const mappedArray = users.map((user) => {
         return {
             id: user.id,
@@ -17,19 +17,19 @@ export function readUsers(sortBy: string, sortDir: string): userResponseDto[] {
         };
     });
 
-    if (!sortBy) {
+    if (!dto.sortBy) {
         return mappedArray;
     }
 
     mappedArray.sort((a, b) => {
-        const valueA = a[sortBy as keyof typeof a];
-        const valueB = b[sortBy as keyof typeof b];
+        const valueA = a[dto.sortBy as keyof typeof a];
+        const valueB = b[dto.sortBy as keyof typeof b];
 
         const strA = String(valueA || "");
         const strB = String(valueB || "");
         const comparison = strA.localeCompare(strB);
 
-        if (sortDir === "desc") {
+        if (dto.sortDir === "desc") {
             return comparison * -1;
         }
 
@@ -39,8 +39,7 @@ export function readUsers(sortBy: string, sortDir: string): userResponseDto[] {
     return mappedArray;
 }
 
-export function readUserById(req: Request) {
-    const targetId = req.params.id;
+export function readUserById(targetId : targetIdDto) {
     const user = users.find((u) => u.id === targetId);
 
     if (!user) {
@@ -109,8 +108,7 @@ export function updateUser(
     };
 }
 
-export function removeUser(req: Request) {
-    const targetId = req.params.id;
+export function removeUser(targetId : targetIdDto) {
     const indexInArray = users.findIndex((u) => u.id === targetId);
 
     if (indexInArray === -1) {

@@ -1,5 +1,18 @@
 import { z } from "zod";
 
+const SortBySchema = ["date", "createdAt"] as const;
+const SortDirSchema = ["asc", "desc"] as const;
+const statusFilterSchema = ["scheduled", "completed", "missed", "canceled"] as const;
+
+export const shiftQueryParamsSchema = z.object({
+    sortBy: z.enum(SortBySchema).optional(),
+    sortDir: z.enum(SortDirSchema).optional(),
+    status: z.enum(statusFilterSchema).optional(),
+    userId: z.uuid().optional(),
+})
+
+export type shiftQueryParamsDto = z.infer<typeof shiftQueryParamsSchema>;
+
 export const createShiftSchema = z.object({
     username: z.string().min(1).max(30),
     date: z.iso.date("Date must be a real date in YYYY-MM-DD format"),

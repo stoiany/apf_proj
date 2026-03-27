@@ -1,7 +1,7 @@
 import { users } from "../repositories/users.repo";
 import { swapRequests } from "../repositories/swapRequests.repo";
 import {
-    createSwapRequestDto,
+    createSwapRequestDto, swapReqQueryParamsDto,
     swapRequestResponseDto,
     updateSwapRequestDto,
 } from "../schemas/swapRequest.schemas";
@@ -11,26 +11,22 @@ import { shifts } from "../repositories/shifts.repo";
 export type SwapStatus = "pending" | "approved" | "rejected";
 
 export function readSwapRequests(
-    sortBy: string,
-    sortDir: string,
-    requesterId: string,
-    targetUserId: string,
-    status: string,
+    dto : swapReqQueryParamsDto
 ): swapRequestResponseDto[] {
     let processedArray = swapRequests;
 
-    if (requesterId) {
+    if (dto.requesterId) {
         processedArray = processedArray.filter(
-            (s) => s.requesterId === requesterId,
+            (s) => s.requesterId === dto.requesterId,
         );
     }
-    if (targetUserId) {
+    if (dto.targetUserId) {
         processedArray = processedArray.filter(
-            (s) => s.targetUserId === targetUserId,
+            (s) => s.targetUserId === dto.targetUserId,
         );
     }
-    if (status) {
-        processedArray = processedArray.filter((s) => s.status === status);
+    if (dto.status) {
+        processedArray = processedArray.filter((s) => s.status === dto.status);
     }
 
     const mappedArray = processedArray.map((item) => {
@@ -46,17 +42,17 @@ export function readSwapRequests(
         };
     });
 
-    if (!sortBy) {
+    if (!dto.sortBy) {
         return mappedArray;
     }
 
     mappedArray.sort((a, b) => {
         let comparison: number;
 
-        const valueA = a[sortBy as keyof typeof a];
-        const valueB = b[sortBy as keyof typeof b];
+        const valueA = a[dto.sortBy as keyof typeof a];
+        const valueB = b[dto.sortBy as keyof typeof b];
 
-        if (sortBy === "createdAt") {
+        if (dto.sortBy === "createdAt") {
             const timeA = new Date(valueA as string).getTime();
             const timeB = new Date(valueB as string).getTime();
             comparison = timeA - timeB;
@@ -66,7 +62,7 @@ export function readSwapRequests(
             comparison = strA.localeCompare(strB);
         }
 
-        if (sortDir === "desc") {
+        if (dto.sortDir === "desc") {
             return comparison * -1;
         }
 

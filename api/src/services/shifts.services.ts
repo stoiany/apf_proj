@@ -1,34 +1,31 @@
 import { shifts } from "../repositories/shifts.repo";
 import { users } from "../repositories/users.repo";
 import { ApiError } from "../middleware/ApiError.class";
-import { Request } from "express";
 import crypto from "crypto";
 import {
-    createShiftDto,
+    createShiftDto, shiftQueryParamsDto,
     shiftResponseDto,
     updateShiftDto,
 } from "../schemas/shift.schemas";
+import { targetIdDto } from "../schemas/other.schemas";
 
 export type ShiftTime = "morning" | "day" | "evening";
 export type ShiftStatus = "scheduled" | "completed" | "missed";
 
 export function readShifts(
-    sortBy: string,
-    sortDir: string,
-    statusFilter: string,
-    userIdFilter: string,
+    dto : shiftQueryParamsDto
 ): shiftResponseDto[] {
     let processedArray = shifts;
 
-    if (statusFilter) {
+    if (dto.status) {
         processedArray = processedArray.filter(
-            (s) => s.status === statusFilter,
+            (s) => s.status === dto.status,
         );
     }
 
-    if (userIdFilter) {
+    if (dto.userId) {
         processedArray = processedArray.filter(
-            (s) => s.userId === userIdFilter,
+            (s) => s.userId === dto.userId,
         );
     }
 
@@ -45,17 +42,17 @@ export function readShifts(
         };
     });
 
-    if (!sortBy) {
+    if (!dto.sortBy) {
         return mappedArray;
     }
 
     mappedArray.sort((a, b) => {
         let comparison: number;
 
-        const valueA = a[sortBy as keyof typeof a];
-        const valueB = b[sortBy as keyof typeof b];
+        const valueA = a[dto.sortBy as keyof typeof a];
+        const valueB = b[dto.sortBy as keyof typeof b];
 
-        if (sortBy === "date" || sortBy === "createdAt") {
+        if (dto.sortBy === "date" || dto.sortBy === "createdAt") {
             const timeA = new Date(valueA as string).getTime();
             const timeB = new Date(valueB as string).getTime();
             comparison = timeA - timeB;
@@ -65,7 +62,7 @@ export function readShifts(
             comparison = strA.localeCompare(strB);
         }
 
-        if (sortDir === "desc") {
+        if (dto.sortDir === "desc") {
             return comparison * -1;
         }
 
@@ -75,9 +72,8 @@ export function readShifts(
     return mappedArray;
 }
 
-export function readShiftById(req: Request) {
-    const targetId = req.params.id;
-    const item = shifts.find((item) => item.id === targetId);
+export function readShiftById(dto : targetIdDto) : shiftResponseDto {
+    const item = shifts.find((item) => item.id === dto);
 
     if (!item) {
         throw new ApiError(
@@ -91,8 +87,8 @@ export function readShiftById(req: Request) {
         id: item.id,
         username: user ? user.username : "User not found.",
         date: item.date,
-        time: item.time,
-        status: item.status,
+        time: item.time as ShiftTime,
+        status: item.status as ShiftStatus,
         comment: item.comment,
         createdAt: item.createdAt,
     };
@@ -154,7 +150,7 @@ export function createShift(dto: createShiftDto): shiftResponseDto {
 
 export function updateShift(
     dto: updateShiftDto,
-    targetId: string,
+    targetId: targetIdDto,
 ): shiftResponseDto {
     const indexInArray = shifts.findIndex((item) => item.id === targetId);
 
@@ -226,8 +222,7 @@ export function updateShift(
     };
 }
 
-export function removeShift(req: Request) {
-    const targetId = req.params.id;
+export function removeShift(targetId : targetIdDto) {
     const indexInArray = shifts.findIndex((item) => item.id === targetId);
 
     if (indexInArray === -1) {

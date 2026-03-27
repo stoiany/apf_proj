@@ -1,5 +1,19 @@
 import { z } from "zod";
 
+const SortBySchema = ["requester", "createdAt", "targetUser"] as const;
+const SortDirSchema = ["asc", "desc"] as const;
+const statusFilterSchema = ["pending", "approved", "rejected"] as const;
+
+export const swapReqQueryParamsSchema = z.object({
+    sortBy: z.enum(SortBySchema).optional(),
+    sortDir: z.enum(SortDirSchema).optional(),
+    status: z.enum(statusFilterSchema).optional(),
+    requesterId: z.uuid().optional(),
+    targetUserId: z.uuid().optional(),
+})
+
+export type swapReqQueryParamsDto = z.infer<typeof swapReqQueryParamsSchema>;
+
 export const createSwapRequestSchema = z.object({
     requester: z.string().min(1).max(30),
     targetUser: z.string().min(1).max(30),

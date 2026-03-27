@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000/api
 
 ### GET all swap requests
-GET {{baseUrl}}/swapRequests?sortBy=createdAt&sortDir=asc&status=approved
+GET {{baseUrl}}/swapRequests?sortBy=createdAt&sortDir=asc
 
 ### Get swap request by id
 GET {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24

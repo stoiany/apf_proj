@@ -6,19 +6,18 @@ import {
     removeShift,
     updateShift,
 } from "../services/shifts.services";
-import { createShiftDto, updateShiftDto } from "../schemas/shift.schemas";
+import {createShiftDto, shiftQueryParamsDto, updateShiftDto} from "../schemas/shift.schemas";
+import {targetIdDto} from "../schemas/other.schemas";
 
 export function getShifts(req: Request, res: Response) {
-    const sortBy = req.query.sortBy as string;
-    const sortDir = req.query.sortDir as string;
-    const status = req.query.status as string;
-    const userId = req.query.userId as string;
-    const dtoArray = readShifts(sortBy, sortDir, status, userId);
+    const dto : shiftQueryParamsDto = res.locals.query as shiftQueryParamsDto;
+    const dtoArray = readShifts(dto);
     res.status(200).json(dtoArray);
 }
 
 export function getShiftById(req: Request, res: Response) {
-    const dto = readShiftById(req);
+    const targetId : targetIdDto = req.params.id as string;
+    const dto = readShiftById(targetId);
     res.status(200).json(dto);
 }
 
@@ -29,13 +28,14 @@ export function postShift(req: Request, res: Response) {
 }
 
 export function putShift(req: Request, res: Response) {
-    const targetId = req.params.id as string;
+    const targetId : targetIdDto = req.params.id as string;
     const dto: updateShiftDto = req.body;
     const responseDto = updateShift(dto, targetId);
     res.status(200).json(responseDto);
 }
 
 export function deleteShift(req: Request, res: Response) {
-    removeShift(req);
+    const targetId : targetIdDto = req.params.id as string;
+    removeShift(targetId);
     res.status(204).send();
 }

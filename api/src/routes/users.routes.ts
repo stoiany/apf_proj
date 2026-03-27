@@ -6,13 +6,14 @@ import {
     postUser,
     putUser,
 } from "../controllers/users.controllers";
-import { validate } from "../middleware/validation";
-import { createUserSchema, updateUserSchema } from "../schemas/users.schemas";
+import {validateBody, validateParams, validateQuery} from "../middleware/validation";
+import {createUserSchema, updateUserSchema, userQueryParamsSchema} from "../schemas/users.schemas";
+import {targetIdSchema} from "../schemas/other.schemas";
 
 export const userRouter = Router();
 
-userRouter.get("/", getUsers);
-userRouter.get("/:id", getUserById);
-userRouter.post("/", validate(createUserSchema), postUser);
-userRouter.put("/:id", validate(updateUserSchema), putUser);
-userRouter.delete("/:id", deleteUser);
+userRouter.get("/", validateQuery(userQueryParamsSchema), getUsers);
+userRouter.get("/:id", validateParams(targetIdSchema), getUserById);
+userRouter.post("/", validateBody(createUserSchema), postUser);
+userRouter.put("/:id", validateBody(updateUserSchema), validateParams(targetIdSchema), putUser);
+userRouter.delete("/:id", validateParams(targetIdSchema), deleteUser);

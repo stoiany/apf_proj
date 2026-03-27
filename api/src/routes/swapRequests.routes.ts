@@ -6,24 +6,26 @@ import {
     putSwapRequest,
     deleteSwapRequest,
 } from "../controllers/swapRequests.controllers";
-import { validate } from "../middleware/validation";
+import {validateBody, validateParams, validateQuery} from "../middleware/validation";
 import {
-    createSwapRequestSchema,
+    createSwapRequestSchema, swapReqQueryParamsSchema,
     updateSwapRequestSchema,
 } from "../schemas/swapRequest.schemas";
+import {targetIdSchema} from "../schemas/other.schemas";
 
 export const swapRequestsRouter = Router();
 
-swapRequestsRouter.get("/", getSwapRequests);
-swapRequestsRouter.get("/:id", getSwapRequestById);
+swapRequestsRouter.get("/", validateQuery(swapReqQueryParamsSchema), getSwapRequests);
+swapRequestsRouter.get("/:id", validateParams(targetIdSchema), getSwapRequestById);
 swapRequestsRouter.post(
     "/",
-    validate(createSwapRequestSchema),
+    validateBody(createSwapRequestSchema),
     postSwapRequest,
 );
 swapRequestsRouter.put(
     "/:id",
-    validate(updateSwapRequestSchema),
+    validateBody(updateSwapRequestSchema),
+    validateParams(targetIdSchema),
     putSwapRequest,
 );
-swapRequestsRouter.delete("/:id", deleteSwapRequest);
+swapRequestsRouter.delete("/:id", validateParams(targetIdSchema), deleteSwapRequest);
