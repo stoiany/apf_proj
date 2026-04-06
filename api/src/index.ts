@@ -8,6 +8,7 @@ import { shiftRouter } from "./routes/shifts.routes";
 import { userRouter } from "./routes/users.routes";
 import { swapRequestsRouter } from "./routes/swapRequests.routes";
 import { schedulesRouter } from "./routes/schedules.routes";
+import {migrate} from "./db/migrate";
 
 const app = express();
 app.use(loggingMiddleware);
@@ -25,4 +26,13 @@ app.get("/health", (req: Request, res: Response) => {
 app.use(pathHandler);
 app.use(errorHandler);
 
-app.listen(3000, () => console.log("API started on http://localhost:3000"));
+async function bootstrap() : Promise<void> {
+    await migrate();
+    console.log("Database schema initialized successfully.");
+    app.listen(3000, () => console.log("API started on http://localhost:3000"));
+}
+
+bootstrap().catch((err) => {
+    console.error("Fatal startup error:", err);
+    process.exit(1);
+});
