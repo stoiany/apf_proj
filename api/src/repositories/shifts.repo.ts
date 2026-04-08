@@ -220,3 +220,18 @@ export async function deleteShiftRepo(targetId : targetIdDto): Promise<number> {
 
     return result.changes ?? 0;
 }
+
+export async function getShiftsStatsRepo(): Promise<{ status: string; count: number }[]> {
+    const db = await getDb();
+    const sql = `
+        SELECT status, COUNT(id) as count 
+        FROM Shifts 
+        GROUP BY status
+    `;
+    const rows = await db.all(sql);
+
+    return rows.map((row: any) => ({
+        status: String(row.status),
+        count: Number(row.count)
+    }));
+}

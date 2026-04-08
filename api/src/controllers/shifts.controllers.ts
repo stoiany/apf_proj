@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {
-    createShift,
+    createShift, getShiftsStats,
     readShiftById,
     readShifts,
     removeShift,
@@ -55,6 +55,15 @@ export async function deleteShift(req: Request, res: Response, next: NextFunctio
         const targetId: targetIdDto = req.params.id as string;
         await removeShift(targetId);
         res.status(204).send();
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function getStats(req: Request, res: Response, next: NextFunction) {
+    try {
+        const stats = await getShiftsStats();
+        res.status(200).json(stats);
     } catch (err) {
         next(err);
     }

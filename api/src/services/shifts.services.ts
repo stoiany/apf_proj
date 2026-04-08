@@ -93,3 +93,9 @@ export async function removeShift(targetId : targetIdDto) {
         );
     }
 }
+
+import { getShiftsStatsRepo } from "../repositories/shifts.repo";
+
+export async function getShiftsStats() {
+    return await getShiftsStatsRepo();
+}

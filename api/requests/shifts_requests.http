@@ -11,9 +11,9 @@ Content-Type: application/json
 
 {
   "username": "Ihor",
-  "date": "2025-04-03",
+  "date": "2025-06-23",
   "time": "evening",
-  "status": "scheduled"
+  "status": "completed"
 }
 
 ### PUT shift
@@ -27,3 +27,6 @@ Content-Type: application/json
 
 ### DELETE shift
 DELETE {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
+
+### Stats on shifts
+GET {{baseUrl}}/shifts/stats
