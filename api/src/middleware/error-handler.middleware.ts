@@ -26,22 +26,16 @@ export function errorHandler(
 
     if (dbError.code && dbError.code.startsWith("SQLITE_")) {
         if (dbError.code === "SQLITE_CONSTRAINT") {
-            res.status(409).json({
-                error: {
-                    code: "DB_CONSTRAINT_VIOLATION",
-                    message: "Database constraint failed: " + dbError.message
-                }
+            return res.status(409).json({
+                code: "DB_CONSTRAINT_VIOLATION",
+                message: "Database constraint failed: " + dbError.message
             });
-            return;
         }
 
-        res.status(400).json({
-            error: {
-                code: "DB_BAD_REQUEST",
-                message: "Invalid database operation."
-            }
+        return res.status(400).json({
+            code: "DB_BAD_REQUEST",
+            message: "Invalid database operation."
         });
-        return;
     }
 
     console.log("500: ", err);

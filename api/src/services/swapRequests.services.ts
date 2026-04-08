@@ -13,8 +13,6 @@ import {
 import { ApiError } from "../middleware/ApiError.class";
 import {readShiftByIdRepo} from "../repositories/shifts.repo";
 
-export type SwapStatus = "pending" | "approved" | "rejected";
-
 export async function readSwapRequests(
     dto : swapReqQueryParamsDto
 ): Promise<swapRequestResponseDto[]> {
@@ -33,79 +31,6 @@ export async function readSwapRequestById(targetId: string): Promise<swapRequest
 
     return item;
 }
-
-// export function createSwapRequest(
-//     dto: createSwapRequestDto,
-// ): swapRequestResponseDto {
-//     const requester = users.find((u) => u.username === dto.requester);
-//     const targetUser = users.find((u) => u.username === dto.targetUser);
-//
-//     if (!requester) {
-//         throw new ApiError(
-//             404,
-//             "NOT_FOUND",
-//             "Requester user with that username was not found.",
-//         );
-//     }
-//
-//     if (!targetUser) {
-//         throw new ApiError(
-//             404,
-//             "NOT_FOUND",
-//             "Target user with that username was not found.",
-//         );
-//     }
-//
-//     const shift = shifts.find((i) => i.id === dto.shiftId);
-//     if (!shift) {
-//         throw new ApiError(
-//             404,
-//             "NOT_FOUND",
-//             "Shift with that ID was not found.",
-//         );
-//     }
-//     if (shift.userId !== requester.id) {
-//         throw new ApiError(
-//             409,
-//             "CONFLICT",
-//             "Requester is not assigned to that shift.",
-//         );
-//     }
-//
-//     const isCollision = swapRequests.some(
-//         (s) =>
-//             s.requesterId === requester.id &&
-//             s.targetUserId === targetUser.id &&
-//             s.shiftId === shift.id,
-//     );
-//
-//     if (isCollision) {
-//         throw new ApiError(
-//             409,
-//             "CONFLICT",
-//             "Swap request on this shift and target user already exists.",
-//         );
-//     }
-//
-//     const item = {
-//         id: crypto.randomUUID(),
-//         requesterId: requester ? requester.id : "User not found.",
-//         targetUserId: targetUser ? targetUser.id : "User not found",
-//         shiftId: dto.shiftId,
-//         status: "pending",
-//         createdAt: new Date().toISOString(),
-//     };
-//     swapRequests.push(item);
-//
-//     return {
-//         id: item.id,
-//         requester: dto.requester,
-//         targetUser: dto.targetUser,
-//         shiftId: dto.shiftId,
-//         status: item.status as SwapStatus,
-//         createdAt: item.createdAt,
-//     };
-// }
 
 export async function createSwapRequest(dto : createSwapRequestDto): Promise<swapRequestResponseDto> {
     const requester = await readUserByUsername(dto.requester);
