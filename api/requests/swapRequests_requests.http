@@ -12,20 +12,20 @@ Content-Type: application/json
 
 {
   "requester": "Ihor",
-  "targetUser": "Yaroslav Stoian",
-  "shiftId": "1e1155eb-0c2e-4631-981e-4c5ccd7bdbf5"
+  "targetUser": "Marlboro",
+  "shiftId": "c2a54125-0a76-46b1-8469-3e1b90620a13"
 }
 
 ### PUT swap request
-PUT {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24
+PUT {{baseUrl}}/swapRequests/e289de23-8266-4201-9534-a7e2aa7545d2
 Content-Type: application/json
 
 {
-  "requester": "Yaroslav Stoian",
-  "targetUser": "Vova",
-  "shiftId": "e409299e-8501-4be4-b4fa-8b06ab0fa25e",
+  "requester": "Ihor",
+  "targetUser": "Marlboro",
+  "shiftId": "c2a54125-0a76-46b1-8469-3e1b90620a13",
   "status": "approved"
 }
 
 ### DELETE swap req
-DELETE {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24
+DELETE {{baseUrl}}/swapRequests/e289de23-8266-4201-9534-a7e2aa7545d2

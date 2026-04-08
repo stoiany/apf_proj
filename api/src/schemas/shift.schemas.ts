@@ -57,3 +57,13 @@ export const shiftResponseSchema = createShiftSchema.extend({
 });
 
 export type shiftResponseDto = z.infer<typeof shiftResponseSchema>;
+
+export type shiftResponseRow = {
+    id: number | string,
+    username: string,
+    date: string,
+    time: "morning" | "day" | "evening",
+    status: "scheduled" | "completed" | "missed" | "canceled",
+    comment: string | null,
+    createdAt: string,
+}

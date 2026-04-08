@@ -3,7 +3,7 @@
 GET {{baseUrl}}/shifts?sortBy=date&status=scheduled&userId=310475d3-04fc-4600-b9e3-7e66d19bb3bf
 
 ### GET shift by id
-GET {{baseUrl}}/shifts/74b2248a-f17b-438d-8c30-e6c24777f798ff
+GET {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
 
 ### POST shift
 POST {{baseUrl}}/shifts
@@ -11,22 +11,19 @@ Content-Type: application/json
 
 {
   "username": "Ihor",
-  "date": "2026-04-03",
+  "date": "2025-04-03",
   "time": "evening",
   "status": "scheduled"
 }
 
 ### PUT shift
-PUT {{baseUrl}}/shifts/e409299e-8501-4be4-b4fa-8b06ab0fa25e
+PUT {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
 Content-Type: application/json
 
 {
-  "username": "Marlboro",
-  "date": "2026-04-20",
-  "time": "evening",
-  "status": "missed",
+  "status": "completed",
   "comment": "fff"
 }
 
 ### DELETE shift
-DELETE {{baseUrl}}/shifts/e409299e-8501-4be4-b4fa-8b06ab0fa25e
+DELETE {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d

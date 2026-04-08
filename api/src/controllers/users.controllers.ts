@@ -5,37 +5,57 @@ import {
     removeUser,
     updateUser,
 } from "../services/users.services";
-import { Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import {createUserDto, updateUserDto, userQueryParamsDto} from "../schemas/users.schemas";
 import {targetIdDto} from "../schemas/other.schemas";
 
-export function getUsers(req: Request, res: Response) {
-    const dto : userQueryParamsDto = res.locals.query as userQueryParamsDto;
-    const dtoArray = readUsers(dto);
-    res.status(200).json(dtoArray);
+export async function getUsers(req: Request, res: Response, next: NextFunction) : Promise<void> {
+    try {
+        const dto: userQueryParamsDto = res.locals.query as userQueryParamsDto;
+        const dtoArray = await readUsers(dto);
+        res.status(200).json(dtoArray);
+    } catch (err) {
+        next(err);
+    }
 }
 
-export function getUserById(req: Request, res: Response) {
-    const targetId : targetIdDto = req.params.id as string;
-    const dto = readUserById(targetId);
-    res.status(200).json(dto);
+export async function getUserById(req: Request, res: Response, next: NextFunction) {
+    try {
+        const targetId : targetIdDto = req.params.id as string;
+        const dto = await readUserById(targetId);
+        res.status(200).json(dto);
+    } catch (err) {
+        next(err);
+    }
 }
 
-export function postUser(req: Request, res: Response) {
-    const dto : createUserDto = req.body;
-    const responseDto = createUser(dto);
-    res.status(201).json(responseDto);
+export async function postUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        const dto : createUserDto = req.body;
+        const responseDto = await createUser(dto);
+        res.status(201).json(responseDto);
+    } catch (err) {
+        next(err);
+    }
 }
 
-export function putUser(req: Request, res: Response) {
-    const targetId : targetIdDto = req.params.id as string;
-    const dto : updateUserDto = req.body;
-    const responseDto = updateUser(dto, targetId);
-    res.status(200).json(responseDto);
+export async function putUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        const targetId : targetIdDto = req.params.id as string;
+        const dto : updateUserDto = req.body;
+        const responseDto = await updateUser(dto, targetId);
+        res.status(200).json(responseDto);
+    } catch (err) {
+        next(err);
+    }
 }
 
-export function deleteUser(req: Request, res: Response) {
-    const targetId : targetIdDto = req.params.id as string;
-    removeUser(targetId);
-    res.status(204).send();
+export async function deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        const targetId : targetIdDto = req.params.id as string;
+        await removeUser(targetId);
+        res.status(204).send();
+    } catch (err) {
+        next(err);
+    }
 }

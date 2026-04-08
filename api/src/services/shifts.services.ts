@@ -1,7 +1,12 @@
-import { shifts } from "../repositories/shifts.repo";
-import { users } from "../repositories/users.repo";
+import {
+    checkShiftCollisionOnUpdateRepo,
+    checkShiftCollisionRepo,
+    createShiftRepo, deleteShiftRepo,
+    readShiftByIdRepo,
+    readShiftsRepo,
+    updateShiftRepo
+} from "../repositories/shifts.repo";
 import { ApiError } from "../middleware/ApiError.class";
-import crypto from "crypto";
 import {
     createShiftDto, shiftQueryParamsDto,
     shiftResponseDto,
@@ -12,149 +17,43 @@ import { targetIdDto } from "../schemas/other.schemas";
 export type ShiftTime = "morning" | "day" | "evening";
 export type ShiftStatus = "scheduled" | "completed" | "missed";
 
-export function readShifts(
+export async function readShifts(
     dto : shiftQueryParamsDto
-): shiftResponseDto[] {
-    let processedArray = shifts;
-
-    if (dto.status) {
-        processedArray = processedArray.filter(
-            (s) => s.status === dto.status,
-        );
-    }
-
-    if (dto.userId) {
-        processedArray = processedArray.filter(
-            (s) => s.userId === dto.userId,
-        );
-    }
-
-    const mappedArray = processedArray.map((item) => {
-        const user = users.find((u) => u.id === item.userId);
-        return {
-            id: item.id,
-            username: user ? user.username : "User not found.",
-            date: item.date,
-            time: item.time as ShiftTime,
-            status: item.status as ShiftStatus,
-            comment: item.comment,
-            createdAt: item.createdAt,
-        };
-    });
-
-    if (!dto.sortBy) {
-        return mappedArray;
-    }
-
-    mappedArray.sort((a, b) => {
-        let comparison: number;
-
-        const valueA = a[dto.sortBy as keyof typeof a];
-        const valueB = b[dto.sortBy as keyof typeof b];
-
-        if (dto.sortBy === "date" || dto.sortBy === "createdAt") {
-            const timeA = new Date(valueA as string).getTime();
-            const timeB = new Date(valueB as string).getTime();
-            comparison = timeA - timeB;
-        } else {
-            const strA = String(valueA || "");
-            const strB = String(valueB || "");
-            comparison = strA.localeCompare(strB);
-        }
-
-        if (dto.sortDir === "desc") {
-            return comparison * -1;
-        }
-
-        return comparison;
-    });
-
-    return mappedArray;
+): Promise<shiftResponseDto[]> {
+    return await readShiftsRepo(dto);
 }
 
-export function readShiftById(dto : targetIdDto) : shiftResponseDto {
-    const item = shifts.find((item) => item.id === dto);
-
-    if (!item) {
+export async function readShiftById(targetId : targetIdDto) : Promise<shiftResponseDto> {
+    const shift = await readShiftByIdRepo(targetId);
+    if(!shift){
         throw new ApiError(
             404,
             "NOT_FOUND",
             "Shift with that ID was not found.",
         );
     }
-    const user = users.find((u) => u.id === item.userId);
-    return {
-        id: item.id,
-        username: user ? user.username : "User not found.",
-        date: item.date,
-        time: item.time as ShiftTime,
-        status: item.status as ShiftStatus,
-        comment: item.comment,
-        createdAt: item.createdAt,
-    };
+    return shift;
 }
 
-export function createShift(dto: createShiftDto): shiftResponseDto {
-    const targetDate = dto.date;
-    const targetTime = dto.time;
-
-    const isCollision = shifts.some(
-        (s) =>
-            s.date === targetDate &&
-            s.time === targetTime &&
-            s.status !== "canceled",
-    );
-
-    if (isCollision) {
+export async function createShift(dto: createShiftDto): Promise<shiftResponseDto> {
+    const isCollision = await checkShiftCollisionRepo(dto.date, dto.time);
+    if(isCollision) {
         throw new ApiError(
-            409,
-            "TIME_CONFLICT",
-            "Shift on that date and time already exists.",
+                409,
+                "TIME_CONFLICT",
+                "Shift on that date and time already exists.",
         );
     }
 
-    const user = users.find((u) => u.username === dto.username);
-    let userId;
-    if (!user) {
-        const newUser = {
-            id: crypto.randomUUID(),
-            username: dto.username,
-        };
-        users.push(newUser);
-        userId = newUser.id;
-    } else {
-        userId = user.id;
-    }
-
-    const item = {
-        id: crypto.randomUUID(),
-        userId: userId,
-        date: dto.date,
-        time: dto.time,
-        status: dto.status,
-        comment: dto.comment,
-        createdAt: new Date().toISOString(),
-    };
-    shifts.push(item);
-
-    return {
-        id: item.id,
-        username: dto.username,
-        date: dto.date,
-        time: dto.time,
-        status: dto.status,
-        comment: dto.comment,
-        createdAt: item.createdAt,
-    };
+    return await createShiftRepo(dto);
 }
 
-export function updateShift(
+export async function updateShift(
     dto: updateShiftDto,
-    targetId: targetIdDto,
-): shiftResponseDto {
-    const indexInArray = shifts.findIndex((item) => item.id === targetId);
-
-    if (indexInArray === -1) {
+    targetId: string,
+): Promise<shiftResponseDto> {
+    const shift = await readShiftByIdRepo(targetId);
+    if(!shift){
         throw new ApiError(
             404,
             "NOT_FOUND",
@@ -162,18 +61,14 @@ export function updateShift(
         );
     }
 
-    const item = shifts[indexInArray];
-
-    const targetDate: string = dto.date !== undefined ? dto.date : item.date;
-    const targetTime: string = dto.time !== undefined ? dto.time : item.time;
+    const targetDate = dto.date !== undefined ? dto.date : String(shift.date);
+    const targetTime = dto.time !== undefined ? dto.time : String(shift.time) as ShiftTime;
 
     if (dto.date !== undefined || dto.time !== undefined) {
-        const isCollision = shifts.some(
-            (s) =>
-                s.date === targetDate &&
-                s.time === targetTime &&
-                s.id !== item.id &&
-                s.status !== "canceled",
+        const isCollision = await checkShiftCollisionOnUpdateRepo(
+            targetDate,
+            targetTime,
+            targetId
         );
 
         if (isCollision) {
@@ -185,53 +80,16 @@ export function updateShift(
         }
     }
 
-    let dtoUsername;
-    if (dto.username !== undefined) {
-        const user = users.find((u) => u.username === dto.username);
-        if (!user) {
-            const newUser = {
-                id: crypto.randomUUID(),
-                username: dto.username,
-            };
-            users.push(newUser);
-            item.userId = newUser.id;
-        } else {
-            item.userId = user.id;
-        }
-        dtoUsername = dto.username;
-    } else {
-        const user = users.find((u) => u.id === item.userId);
-        dtoUsername = user ? user.username : "Not found";
-    }
-
-    if (dto.status !== undefined) item.status = dto.status;
-    if (dto.date !== undefined) item.date = dto.date;
-    if (dto.time !== undefined) item.time = dto.time;
-    if (dto.comment !== undefined) item.comment = dto.comment;
-
-    shifts[indexInArray] = item;
-
-    return {
-        id: item.id,
-        username: dtoUsername,
-        date: item.date,
-        time: item.time as ShiftTime,
-        status: item.status as ShiftStatus,
-        comment: item.comment,
-        createdAt: item.createdAt,
-    };
+    return await updateShiftRepo(targetId, dto, shift);
 }
 
-export function removeShift(targetId : targetIdDto) {
-    const indexInArray = shifts.findIndex((item) => item.id === targetId);
-
-    if (indexInArray === -1) {
+export async function removeShift(targetId : targetIdDto) {
+    const deletedCount = await deleteShiftRepo(targetId);
+    if(deletedCount === 0){
         throw new ApiError(
             404,
             "NOT_FOUND",
             "Shift with that ID was not found.",
         );
     }
-
-    shifts.splice(indexInArray, 1);
 }

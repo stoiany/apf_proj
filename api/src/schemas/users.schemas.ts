@@ -27,3 +27,8 @@ export const userResponseSchema = updateUserSchema.extend({
 });
 
 export type userResponseDto = z.infer<typeof userResponseSchema>;
+
+export type userResponseRow = {
+    id: number | string,
+    username: string,
+}
