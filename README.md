@@ -1,56 +1,95 @@
-# Лабораторна робота №2. Бекенд без БД (REST API)
+## Лабораторна робота №3
 
-## Як запустити проект
+Цей проєкт є розширенням бекенду для системи управління графіками чергувань (Shifts & Swap Requests). Дані тепер зберігаються локально в реляційній базі даних SQLite.
+Запуск та ініціалізація бази даних
 
-Переконайтеся, що у вас встановлено Node.js.
+Встановіть залежності:
 
-Крок 1. Встановіть залежності:
 ```bash
 npm install
 ```
 
-Крок 2. Запустіть проект у режимі розробки:
+Запустіть застосунок:
+
+```bash
 npm run dev
-Сервер запуститься на `http://localhost:3000`.
+```
 
-**Додаткові команди:**
-- `npm run build` — компіляція TypeScript у JavaScript (папка `dist`).
-- `npm run start` — запуск скомпільованого коду.
-- `npm run lint` — перевірка коду лінтером (ESLint).
-- `npm run format` — форматування коду (Prettier).
+При першому запуску сервер автоматично виконає всі міграції (папка migrations/) та створить файл бази даних за шляхом ./data/app.db. Цей файл додано у .gitignore.
 
----
+(Опційно) Наповнення бази тестовими даними (Seed):
+```bash
+npm run seed
+```
 
-## Список реалізованих сутностей
+### Схема Бази Даних
 
-У проекті реалізовано REST API для наступних сутностей (дані зберігаються в оперативній пам'яті):
-- **Users** (`/api/users`) — користувачі системи.
-- **Shifts** (`/api/shifts`) — робочі зміни користувачів.
-- **Swap Requests** (`/api/swapRequests`) — запити на обмін змінами між користувачами.
-- **Schedules** (`/api/schedules/:id`) — розклад конкретного користувача.
+Схема складається з 3-х основних таблиць та таблиці міграцій:
+```
+Users
+    id (TEXT PRIMARY KEY)
+    username (TEXT NOT NULL UNIQUE)
+```
 
----
+```
+Shifts (Графік чергувань)
+    id (TEXT PRIMARY KEY)
+    userId (TEXT NOT NULL, FOREIGN KEY -> Users.id ON DELETE CASCADE)
+    date (TEXT NOT NULL)
+    time (TEXT NOT NULL, CHECK: 'morning', 'day', 'evening')
+    status (TEXT NOT NULL, CHECK: 'scheduled', 'completed', 'missed', 'canceled')
+    comment (TEXT)
+    createdAt (TEXT NOT NULL)
+```
 
-## На що звернути увагу
+```
+SwapRequests (Запити на обмін змінами)
+    id (TEXT PRIMARY KEY)
+    requesterId (TEXT NOT NULL, FOREIGN KEY -> Users.id ON DELETE CASCADE)
+    targetUserId (TEXT NOT NULL, FOREIGN KEY -> Users.id ON DELETE CASCADE)
+    shiftId (TEXT NOT NULL, FOREIGN KEY -> Shifts.id ON DELETE CASCADE)
+    status (TEXT NOT NULL, CHECK: 'pending', 'approved', 'rejected')
+    createdAt (TEXT NOT NULL)
+```
 
-### Базовий happy path
-* `GET /api/shifts`
-* `POST /api/shifts` з коректним body
+#### Індекси: Створені індекси для швидкого пошуку (idx_shifts_date, idx_shifts_userId, idx_swap_shiftId).
 
-### Валідація
-* `POST /api/users` без обов'язкового поля `username`
-* `POST /api/shifts` з некоректним значенням `time` (наприклад, "night" замість дозволеного enum)
+### Приклади запитів (API Endpoints)
 
-### Централізовані помилки
-* `GET /api/users/fake-id-999` (сутність не знайдена — 404)
-* `POST /api/users` з дубльованим `username` (конфлікт бізнес-логіки — 409)
-* `POST /api/shifts` на час і дату, які вже зайняті (конфлікт часу — 409)
-* `GET /api/unknown` (обробник неіснуючих маршрутів pathHandler — 404)
+#### 1. Отримання списку змін (з фільтрацією та сортуванням):
 
-### Діагностика
-* битий JSON у тілі запиту (відловлюється через кастомний error-handler як 400 Bad Request)
-* неправильний URL
+GET /api/shifts?status=scheduled&sortBy=date&sortDir=desc
 
-### Файл зі сценаріями
-Для швидкого прогону всіх позитивних та негативних запитів використовуйте:
-* `demo.http`
+Цей запит використовує WHERE (для status) та ORDER BY (для sortBy та sortDir).
+
+#### 2. Отримання запитів на обмін (демонстрація JOIN):
+
+GET /api/swapRequests?status=pending
+
+Повертає запити на обмін, приєднуючи імена користувачів (requester та targetUser) через подвійний JOIN таблиці Users.
+
+#### 3. Аналітика (Агрегація COUNT / GROUP BY):
+
+GET /api/shifts/stats
+
+Повертає кількість змін, згрупованих за їх статусом.
+
+### Демонстрація SQL Injection (SQLi)
+
+На даному етапі розробки (згідно з умовами лабораторної роботи) SQL-запити формуються за допомогою рядкової конкатенації, без використання параметризованих запитів.
+
+Чому це небезпечно?
+Якщо користувач передасть у параметр id або username специфічний рядок, наприклад:
+
+`' OR 1=1 --`
+
+Це може зламати логіку запиту. Наприклад, запит 
+```sql 
+SELECT * FROM Users WHERE username = '${username}' 
+``` 
+перетвориться на:
+```sql
+SELECT * FROM Users WHERE username = '' OR 1=1 --'
+```
+
+Умова 1=1 завжди істинна, а -- коментує залишок запиту. Це дозволить зловмиснику обійти авторизацію або отримати доступ до всіх записів у базі. Наразі в проєкті імплементовано базовий захист через .replace(/'/g, "''"), але фундаментально архітектура з конкатенацією залишається вразливою до більш складних атак. Ця проблема буде вирішена в наступних лабораторних роботах.
