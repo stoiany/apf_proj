@@ -25,7 +25,7 @@ export async function readShiftsRepo(
                Shifts.createdAt 
         FROM Shifts
         JOIN Users ON Shifts.userId = Users.id
-        WHERE 1=1;
+        WHERE 1=1
     `;
 
     if (dto.userId) {

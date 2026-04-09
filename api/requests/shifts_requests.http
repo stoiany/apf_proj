@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000/api
 ### GET all shifts
-GET {{baseUrl}}/shifts?sortBy=date&status=scheduled&userId=310475d3-04fc-4600-b9e3-7e66d19bb3bf
+GET {{baseUrl}}/shifts?sortBy=date&status=scheduled&userId=d16f0fc1-90bd-482a-9c87-03da6a0ff6ef
 
 ### GET shift by id
 GET {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 {
   "username": "Ihor",
-  "date": "2025-06-23",
+  "date": "2025-06-24",
   "time": "evening",
   "status": "completed"
 }
