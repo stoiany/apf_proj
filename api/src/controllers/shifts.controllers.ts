@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from "express";
 import {
-    createShift, getShiftsStats,
+    createShift, getShiftsStats, getTop3UsersByShiftCount,
     readShiftById,
     readShifts,
     removeShift,
     updateShift,
 } from "../services/shifts.services";
-import {createShiftDto, shiftQueryParamsDto, updateShiftDto} from "../schemas/shift.schemas";
+import {createShiftDto, dateDto, shiftQueryParamsDto, updateShiftDto} from "../schemas/shift.schemas";
 import {targetIdDto} from "../schemas/other.schemas";
 
 export async function getShifts(req: Request, res: Response, next: NextFunction) {
@@ -65,6 +65,16 @@ export async function getStats(req: Request, res: Response, next: NextFunction) 
         const stats = await getShiftsStats();
         res.status(200).json(stats);
     } catch (err) {
+        next(err);
+    }
+}
+
+export async function getTop3Users(req: Request, res: Response, next: NextFunction){
+    try {
+        const targetDateDto : dateDto = res.locals.query as dateDto;
+        const stats = await getTop3UsersByShiftCount(targetDateDto);
+        res.status(200).json(stats);
+    } catch(err) {
         next(err);
     }
 }

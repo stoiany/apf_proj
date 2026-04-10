@@ -67,3 +67,9 @@ export type shiftResponseRow = {
     comment: string | null,
     createdAt: string,
 }
+
+export const dateSchema = z.object({
+    date: z.iso.date("Date must be a real date in YYYY-MM-DD format"),
+});
+
+export type dateDto = z.infer<typeof dateSchema>;

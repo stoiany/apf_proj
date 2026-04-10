@@ -1,14 +1,14 @@
 import {
     checkShiftCollisionOnUpdateRepo,
     checkShiftCollisionRepo,
-    createShiftRepo, deleteShiftRepo,
+    createShiftRepo, deleteShiftRepo, getTop3UsersByShiftCountRepo,
     readShiftByIdRepo,
     readShiftsRepo,
     updateShiftRepo
 } from "../repositories/shifts.repo";
 import { ApiError } from "../middleware/ApiError.class";
 import {
-    createShiftDto, shiftQueryParamsDto,
+    createShiftDto, dateDto, shiftQueryParamsDto,
     shiftResponseDto,
     updateShiftDto,
 } from "../schemas/shift.schemas";
@@ -98,4 +98,9 @@ import { getShiftsStatsRepo } from "../repositories/shifts.repo";
 
 export async function getShiftsStats() {
     return await getShiftsStatsRepo();
+}
+
+export async function getTop3UsersByShiftCount(targetDateDto : dateDto){
+    const date = targetDateDto.date.substring(0,7);
+    return await getTop3UsersByShiftCountRepo(date);
 }

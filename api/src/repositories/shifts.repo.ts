@@ -235,3 +235,23 @@ export async function getShiftsStatsRepo(): Promise<{ status: string; count: num
         count: Number(row.count)
     }));
 }
+
+export async function getTop3UsersByShiftCountRepo(date : string): Promise<{ username: string; count: number }[]> {
+    const db = await getDb();
+    const sql = `
+        SELECT u.username, 
+               COUNT(s.id) as count 
+        FROM Shifts s
+        JOIN Users u ON s.userId = u.id
+        WHERE s.date LIKE '%${date}%'
+        GROUP BY u.username
+        ORDER BY count DESC
+        LIMIT 3
+    `;
+    const rows = await db.all(sql);
+
+    return rows.map((row: any) => ({
+        username: String(row.username),
+        count: Number(row.count)
+    }));
+}

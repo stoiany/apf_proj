@@ -4,15 +4,16 @@ import {
     deleteShift,
     getShifts,
     getShiftById,
-    putShift, getStats,
+    putShift, getStats, getTop3Users,
 } from "../controllers/shifts.controllers";
 import {validateBody, validateParams, validateQuery} from "../middleware/validation";
-import {createShiftSchema, shiftQueryParamsSchema, updateShiftSchema} from "../schemas/shift.schemas";
+import {createShiftSchema, dateSchema, shiftQueryParamsSchema, updateShiftSchema} from "../schemas/shift.schemas";
 import { targetIdSchema } from "../schemas/other.schemas";
 
 export const shiftRouter = Router();
 
 shiftRouter.get("/stats", getStats);
+shiftRouter.get("/top3users", validateQuery(dateSchema), getTop3Users);
 shiftRouter.get("/", validateQuery(shiftQueryParamsSchema), getShifts);
 shiftRouter.get("/:id", validateParams(targetIdSchema), getShiftById);
 shiftRouter.post("/", validateBody(createShiftSchema), postShift);
