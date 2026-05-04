@@ -13,7 +13,7 @@ export async function readSwapRequestsRepo(dto : swapReqQueryParamsDto) : Promis
         FROM SwapRequests
         JOIN Users AS Requester ON SwapRequests.requesterId = Requester.id
         JOIN Users AS Target ON SwapRequests.targetUserId = Target.id
-        WHERE 1=1;
+        WHERE 1=1
     `;
 
     if (dto.status) {

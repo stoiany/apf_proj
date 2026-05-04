@@ -1,127 +1,48 @@
-const STORAGE_KEY = "lab_items";
+export const state = {
+    items: [],
+    status: "idle", // "loading", "success", "empty", "error"
+    error: null,
+    filter: "all",
+    sortState: "default",
+    sortDirection: "desc"
+};
 
-function saveToStorage(items){
-    const json = JSON.stringify(items);
-    localStorage.setItem(STORAGE_KEY, json);
+export function setItems(newItems) {
+    state.items = newItems;
 }
 
-function loadFromStorage(STORAGE_KEY){
-    const json = localStorage.getItem(STORAGE_KEY);
-    if(json === null) return [];
-    try {
-        const data = JSON.parse(json);
-        return Array.isArray(data) ? data : [];
-    } catch {
-        return [];
-    }
+export function setStatus(newStatus, newError = null) {
+    state.status = newStatus;
+    state.error = newError;
 }
 
-let items = loadFromStorage(STORAGE_KEY);
-
-function deleteItemById(id){
-    const index = items.findIndex(item => String(item.id) === String(id));
-    if(index !== -1) {
-        items.splice(index, 1);
-    }
-    saveToStorage(items);
+export function setFilter(filter) {
+    state.filter = filter;
 }
 
-function addItem(dto){
-    const isDuplicate = items.some(item => String(item.date) === String(dto.date) && String(item.time) === String(dto.time));
-    if(isDuplicate === true){
-        return { success: false, message: "Запис на цей час вже існує." };
-    }
-    items.push(dto);
-    saveToStorage(items);
-    return { success: true };
+export function setSort(sortState, sortDir) {
+    state.sortState = sortState;
+    state.sortDirection = sortDir;
 }
 
-function updateItem(id, dto){
-    const index = items.findIndex(item => String(item.id) === String(id));
-    if(index === -1){
-        return { success: false, message: "Запису що Ви намагаєтеся відредагувати не існує." };
-    }
-    const isDuplicate = items.some(item => String(item.date) === String(dto.date) && String(item.time) === String(dto.time) && String(item.id) !== String(dto.id));
-    if(isDuplicate === true){
-        return { success: false, message: "Запис на цей час вже існує." };
-    }
-    items[index] = dto;
-    saveToStorage(items);
-    return { success: true };
-}
+export function getProcessedItems() {
+    let processed = [...state.items];
 
-function validate(dto){
-    clearErrors();
-
-    let isValid = true;
-    if(dto.date === ""){
-        showError("dateInput", "dateError", "Обов'язкове поле.");
-        isValid = false;
+    if (state.filter !== "all") {
+        processed = processed.filter(item => String(item.status) === String(state.filter));
     }
 
-    if(dto.time === ""){
-        showError("timeSlotSelect", "timeError", "Обов'язкове поле.");
-        isValid = false;
+    const tableTime = { "morning": "1", "day": "2", "evening": "3" };
+
+    if (state.sortState === "date") {
+        processed.sort((a, b) => state.sortDirection === "desc"
+            ? b.date.localeCompare(a.date)
+            : a.date.localeCompare(b.date));
+    } else if (state.sortState === "time") {
+        processed.sort((a, b) => state.sortDirection === "desc"
+            ? tableTime[b.time].localeCompare(tableTime[a.time])
+            : tableTime[a.time].localeCompare(tableTime[b.time]));
     }
 
-    const name = dto.username.trim();
-    if(name === ""){
-        showError("nameInput", "nameError", "Обов'язкове поле.");
-        isValid = false;
-    } else if(dto.username.length > 30){
-        showError("nameInput", "nameError", "Ім'я користувача не може бути більше за 30 символів.");
-        isValid = false;
-    }
-
-    const comment = dto.comment.trim();
-    if(comment.length > 80){
-        showError("commentInput", "commentError", "Максимальна кількість символів: 80");
-        isValid = false;
-    }
-    if(dto.status === ""){
-        showError("statusInput", "statusError", "Обов'язкове поле.");
-        isValid = false;
-    }
-
-    return isValid;
-}
-
-let processedItems = items;
-
-function filterArray(filter){
-    if(filter !== "all"){
-        processedItems = items.filter(item => String(item.status) === String(filter));
-    } else {
-        processedItems = items.slice();
-    }
-}
-
-let sortState;
-
-let sortDirection = "desc";
-
-const tableTime = {
-    "morning": "1",
-    "day": "2",
-    "evening": "3"
-}
-
-function sortArray(){
-    if(sortState === "date"){
-        if(sortDirection === "desc"){
-            processedItems.sort((a,b) => b.date.localeCompare(a.date));
-            sortDirection = "asc";
-        } else {
-            processedItems.sort((a,b) => a.date.localeCompare(b.date));
-            sortDirection = "desc";
-        }
-    } else if(sortState === "time"){
-        if(sortDirection === "desc"){
-            processedItems.sort((a,b) => tableTime[b.time].localeCompare(tableTime[a.time]));
-            sortDirection = "asc";
-        } else {
-            processedItems.sort((a,b) => tableTime[a.time].localeCompare(tableTime[b.time]));
-            sortDirection = "desc";
-        }
-    }
+    return processed;
 }
