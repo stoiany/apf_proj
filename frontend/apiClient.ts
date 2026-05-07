@@ -6,9 +6,25 @@ async function request<T>(path : string, options : RequestInit = {}) : Promise<T
     const url = `${API_BASE_URL}${path}`;
     let response : Response;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     try {
-        response = await fetch(url, options);
+        response = await fetch(url, {...options, signal: controller.signal });
+
+        clearTimeout(timeoutId);
+
     } catch (e) {
+        clearTimeout(timeoutId);
+        if (e instanceof Error && e.name === 'AbortError') {
+            throw {
+                status: 408,
+                code: "TIMEOUT",
+                message: "Request timeout: сервер занадто довго не відповідає.",
+                details: e.message
+            };
+        }
+
         throw {
             status: 0,
             message: "Network or CORS error.",
@@ -31,6 +47,7 @@ async function request<T>(path : string, options : RequestInit = {}) : Promise<T
         }
     }
 
+    // if response.ok is false
     let errPayload = null;
     try {
         errPayload = rawText ? JSON.parse(rawText) : null;
