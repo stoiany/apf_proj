@@ -90,3 +90,11 @@ export function clearForm() {
     document.getElementById("statusInput").value = "";
     document.getElementById("commentInput").value = "";
 }
+
+export function setFormLoading(isLoading) {
+    const buttons = document.querySelectorAll("#actionButtons button");
+
+    buttons.forEach(btn => {
+        btn.disabled = isLoading;
+    });
+}

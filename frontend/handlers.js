@@ -95,12 +95,16 @@ document.getElementById("createForm").addEventListener("click", async (e) => {
         const dto = ui.readForm();
         if (!validate(dto)) return;
 
+        ui.setFormLoading(true);
+
         try {
             await api.createShift(dto);
             ui.clearForm();
             await loadData();
         } catch (err) {
             alert(`Помилка створення: ${err.message}`);
+        } finally {
+            ui.setFormLoading(false);
         }
     }
 
@@ -109,6 +113,8 @@ document.getElementById("createForm").addEventListener("click", async (e) => {
         const dto = ui.readForm();
         if (!validate(dto)) return;
 
+        ui.setFormLoading(true);
+
         try {
             await api.updateShift(id, dto);
             ui.clearForm();
@@ -116,6 +122,8 @@ document.getElementById("createForm").addEventListener("click", async (e) => {
             await loadData();
         } catch (err) {
             alert(`Помилка оновлення: ${err.message}`);
+        } finally {
+            ui.setFormLoading(false);
         }
     }
 });
