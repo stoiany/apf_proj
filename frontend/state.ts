@@ -1,5 +1,7 @@
+import {Shift} from "./types.ts";
+
 export const state = {
-    items: [],
+    items: [] as Shift[],
     status: "idle", // "loading", "success", "empty", "error"
     error: null,
     filter: "all",
@@ -7,20 +9,20 @@ export const state = {
     sortDirection: "desc"
 };
 
-export function setItems(newItems) {
+export function setItems(newItems : Shift[]) {
     state.items = newItems;
 }
 
-export function setStatus(newStatus, newError = null) {
+export function setStatus(newStatus: string, newError:any = null) {
     state.status = newStatus;
     state.error = newError;
 }
 
-export function setFilter(filter) {
+export function setFilter(filter : string) {
     state.filter = filter;
 }
 
-export function setSort(sortState, sortDir) {
+export function setSort(sortState: string, sortDir : string) {
     state.sortState = sortState;
     state.sortDirection = sortDir;
 }

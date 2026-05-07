@@ -1,0 +1,31 @@
+{
+  "name": "apf_proj",
+  "version": "1.0.0",
+  "description": "Цей проєкт є розширенням бекенду для системи управління графіками чергувань (Shifts & Swap Requests). Дані тепер зберігаються локально в реляційній базі даних SQLite.\r Запуск та ініціалізація бази даних",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "object-assign": "^4.1.1",
+    "vary": "^1.1.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "scripts": {
+    "dev:fe": "npm run dev --prefix frontend",
+    "dev:be": "npm run dev --prefix api",
+    "dev": "concurrently \"npm run dev:be\" \"npm run dev:fe\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stoiany/apf_proj.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/stoiany/apf_proj/issues"
+  },
+  "homepage": "https://github.com/stoiany/apf_proj#readme"
+}

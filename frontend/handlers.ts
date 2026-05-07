@@ -1,6 +1,7 @@
-import * as api from "./apiClient.js";
+import * as api from "./apiClient.ts";
 import { state, setItems, setStatus, setFilter, setSort, getProcessedItems } from "./state.js";
 import * as ui from "./render.js";
+import {Shift} from "./types.ts";
 
 function updateView() {
     ui.renderTableStatus(state.status, state.error);
@@ -29,45 +30,52 @@ async function loadData() {
     updateView();
 }
 
-function validate(dto) {
+function validate(dto:Shift) {
     ui.clearErrors();
     let isValid = true;
     if (dto.date === "") { ui.showError("dateInput", "dateError", "Обов'язкове поле."); isValid = false; }
-    if (dto.time === "") { ui.showError("timeSlotSelect", "timeError", "Обов'язкове поле."); isValid = false; }
+    if (dto.time as string === "") { ui.showError("timeSlotSelect", "timeError", "Обов'язкове поле."); isValid = false; }
     const name = dto.username.trim();
     if (name === "") { ui.showError("nameInput", "nameError", "Обов'язкове поле."); isValid = false; }
     else if (name.length > 30) { ui.showError("nameInput", "nameError", "Не більше 30 символів."); isValid = false; }
-    if (dto.comment.trim().length > 80) { ui.showError("commentInput", "commentError", "Максимум 80 символів"); isValid = false; }
-    if (dto.status === "") { ui.showError("statusInput", "statusError", "Обов'язкове поле."); isValid = false; }
+    const comment = (dto.comment || "").trim();
+    if (comment.length > 80) { ui.showError("commentInput", "commentError", "Максимум 80 символів"); isValid = false; }
+    if (dto.status as string === "") { ui.showError("statusInput", "statusError", "Обов'язкове поле."); isValid = false; }
     return isValid;
 }
 
-document.getElementById("filterInput").addEventListener("change", (e) => {
-    setFilter(e.target.value);
+document.getElementById("filterInput")?.addEventListener("change", (e) => {
+    const target = e.target as HTMLSelectElement;
+    setFilter(target.value);
     updateView();
 });
 
-document.getElementById("sortInput").addEventListener("change", (e) => {
-    setSort("date", e.target.value === "dateAsc" ? "asc" : "desc");
+document.getElementById("sortInput")?.addEventListener("change", (e) => {
+    const target = e.target as HTMLSelectElement;
+    setSort("date", target.value === "dateAsc" ? "asc" : "desc");
     updateView();
 });
 
-document.getElementById("tableHead").addEventListener("click", (e) => {
-    if (e.target.classList.contains("dateSort")) setSort("date", state.sortDirection === "asc" ? "desc" : "asc");
-    if (e.target.classList.contains("timeSort")) setSort("time", state.sortDirection === "asc" ? "desc" : "asc");
+document.getElementById("tableHead")?.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (target.classList.contains("dateSort")) setSort("date", state.sortDirection === "asc" ? "desc" : "asc");
+    if (target.classList.contains("timeSort")) setSort("time", state.sortDirection === "asc" ? "desc" : "asc");
     updateView();
 });
 
-document.getElementById("itemsTableBody").addEventListener("click", async (e) => {
-    const target = e.target;
+document.getElementById("itemsTableBody")?.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
     const id = target.dataset.id;
+
+    if (!id) return;
 
     if (target.classList.contains("delete-btn")) {
         try {
             await api.deleteShift(id);
-            await loadData(); // Перезавантажуємо список після видалення
+            await loadData();
         } catch (err) {
-            alert(`Помилка видалення: ${err.message}`);
+            const errText = (err as any)?.message || String(err);
+            alert(`Помилка видалення: ${errText}`);
         }
     }
 
@@ -80,8 +88,8 @@ document.getElementById("itemsTableBody").addEventListener("click", async (e) =>
     }
 });
 
-document.getElementById("createForm").addEventListener("click", async (e) => {
-    const target = e.target;
+document.getElementById("createForm")?.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
 
     if (target.classList.contains("reset-button")) ui.clearForm();
 
@@ -102,12 +110,13 @@ document.getElementById("createForm").addEventListener("click", async (e) => {
             ui.clearForm();
             await loadData();
         } catch (err) {
-            if (err.status === 409) {
+            const errStatus = (err as any)?.status || String(err);
+            if (errStatus === 409) {
                 alert("Запис на цей час вже існує.");
                 await loadData();
 
             } else {
-                alert(`Помилка сервера: ${err.message}`);
+                alert(`Помилка сервера: ${errStatus}`);
             }
         } finally {
             ui.setFormLoading(false);
@@ -122,23 +131,25 @@ document.getElementById("createForm").addEventListener("click", async (e) => {
         ui.setFormLoading(true);
 
         try {
+            if(!id) return;
             await api.updateShift(id, dto);
             ui.clearForm();
             ui.changeFormToCreate();
             await loadData();
         } catch (err) {
-            if (err.status === 404) {
+            const errStatus = (err as any)?.status || String(err);
+            if (errStatus === 404) {
                 alert("Запис що ви намагаєтеся редагувати більше не існує.");
                 ui.clearForm();
                 ui.changeFormToCreate();
                 await loadData();
 
-            } else if (err.status === 409) {
+            } else if (errStatus === 409) {
                 alert("Запис на цей час вже існує.");
                 await loadData();
 
             } else {
-                alert(`Помилка сервера: ${err.message}`);
+                alert(`Помилка сервера: ${errStatus}`);
             }
         } finally {
             ui.setFormLoading(false);
@@ -156,9 +167,9 @@ const fieldsToValidate = [
 
 fieldsToValidate.forEach(field => {
     const input = document.getElementById(field.inputId);
-
-    input.addEventListener("blur", (event) => {
-        const value = event.target.value.trim();
+    input?.addEventListener("blur", (event) => {
+        const target = event.target as HTMLInputElement;
+        const value = target.value.trim();
 
         if (field.inputId === "commentInput" && value === "") {
             ui.clearError(field.inputId, field.errorId);
@@ -167,8 +178,9 @@ fieldsToValidate.forEach(field => {
         }
     });
 
-    input.addEventListener("input", (event) => {
-        const value = event.target.value.trim();
+    input?.addEventListener("input", (event) => {
+        const target = event.target as HTMLInputElement;
+        const value = target.value.trim();
 
         if (field.inputId === "commentInput" && value === "") {
             ui.clearError(field.inputId, field.errorId);
@@ -184,4 +196,4 @@ fieldsToValidate.forEach(field => {
     });
 });
 
-loadData();
+void loadData();
