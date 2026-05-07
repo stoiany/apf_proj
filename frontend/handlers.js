@@ -102,7 +102,13 @@ document.getElementById("createForm").addEventListener("click", async (e) => {
             ui.clearForm();
             await loadData();
         } catch (err) {
-            alert(`Помилка створення: ${err.message}`);
+            if (err.status === 409) {
+                alert("Запис на цей час вже існує.");
+                await loadData();
+
+            } else {
+                alert(`Помилка сервера: ${err.message}`);
+            }
         } finally {
             ui.setFormLoading(false);
         }
@@ -121,7 +127,19 @@ document.getElementById("createForm").addEventListener("click", async (e) => {
             ui.changeFormToCreate();
             await loadData();
         } catch (err) {
-            alert(`Помилка оновлення: ${err.message}`);
+            if (err.status === 404) {
+                alert("Запис що ви намагаєтеся редагувати більше не існує.");
+                ui.clearForm();
+                ui.changeFormToCreate();
+                await loadData();
+
+            } else if (err.status === 409) {
+                alert("Запис на цей час вже існує.");
+                await loadData();
+
+            } else {
+                alert(`Помилка сервера: ${err.message}`);
+            }
         } finally {
             ui.setFormLoading(false);
         }
