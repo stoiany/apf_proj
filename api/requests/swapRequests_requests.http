@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:3000/api
+@baseUrl = http://localhost:3000/api/v1
 
 ### GET all swap requests
 GET {{baseUrl}}/swapRequests?sortBy=createdAt&sortDir=asc

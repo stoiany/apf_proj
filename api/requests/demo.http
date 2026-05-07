@@ -4,13 +4,13 @@
 GET {{baseUrl}}/health
 
 ### Успішно: отримати всіх користувачів
-GET {{baseUrl}}/api/users
+GET {{baseUrl}}/api/v1/users
 
 ### Успішно: отримати список змін із query-параметрами (фільтрація та сортування)
-GET {{baseUrl}}/api/shifts?status=scheduled&sortBy=date&sortDir=desc
+GET {{baseUrl}}/api/v1/shifts?status=scheduled&sortBy=date&sortDir=desc
 
 ### Успішно: створити нову зміну
-POST {{baseUrl}}/api/shifts
+POST {{baseUrl}}/api/v1/shifts
 Content-Type: application/json
 
 {
@@ -22,10 +22,10 @@ Content-Type: application/json
 }
 
 ### Помилка 404: сутність не знайдена по ID
-GET {{baseUrl}}/api/users/fake-id-999
+GET {{baseUrl}}/api/v1/users/fake-id-999
 
 ### Помилка 400: обов'язкове поле відсутнє (валідація Zod)
-POST {{baseUrl}}/api/users
+POST {{baseUrl}}/api/v1/users
 Content-Type: application/json
 
 {
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### Помилка 400: неправильний формат даних / enum (неіснуючий час)
-POST {{baseUrl}}/api/shifts
+POST {{baseUrl}}/api/v1/shifts
 Content-Type: application/json
 
 {
@@ -44,7 +44,7 @@ Content-Type: application/json
 }
 
 ### Помилка 409: конфлікт (дубльоване ім'я користувача)
-POST {{baseUrl}}/api/users
+POST {{baseUrl}}/api/v1/users
 Content-Type: application/json
 
 {
@@ -52,7 +52,7 @@ Content-Type: application/json
 }
 
 ### Помилка 409: конфлікт часу (зміна на цю дату і час вже існує в базі)
-POST {{baseUrl}}/api/shifts
+POST {{baseUrl}}/api/v1/shifts
 Content-Type: application/json
 
 {
@@ -63,10 +63,10 @@ Content-Type: application/json
 }
 
 ### Помилка 404: маршрут не знайдено (перевірка pathHandler)
-GET {{baseUrl}}/api/something-unknown
+GET {{baseUrl}}/api/v1/something-unknown
 
 ### Помилка 400: битий JSON (зайва кома в кінці)
-POST {{baseUrl}}/api/users
+POST {{baseUrl}}/api/v1/users
 Content-Type: application/json
 
 {

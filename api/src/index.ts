@@ -41,10 +41,10 @@ app.use(cors({
 
 app.options(/.*/, cors());
 
-app.use("/api/shifts", shiftRouter);
-app.use("/api/users", userRouter);
-app.use("/api/swapRequests", swapRequestsRouter);
-app.use("/api/schedules", schedulesRouter);
+app.use("/api/v1/shifts", shiftRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/swapRequests", swapRequestsRouter);
+app.use("/api/v1/schedules", schedulesRouter);
 
 app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ ok: true });
