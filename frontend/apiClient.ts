@@ -1,4 +1,4 @@
-import { Shift } from "./types";
+import {Shift, SwapRequest, User} from "./types";
 
 const API_BASE_URL = "http://localhost:3000/api/v1";
 
@@ -99,63 +99,63 @@ export async function deleteShift(id : string) {
 
 // USERS
 
-// export async function getUsers() {
-//     return await request("/users", { method: "GET" });
-// }
+export async function getUsers() {
+    return await request<User[]>("/users", { method: "GET" });
+}
 
-// export async function getUserById(id) {
+// export async function getUserById(id: string) {
 //     return await request(`/users/${encodeURIComponent(id)}`, { method: "GET" });
 // }
-//
-// export async function createUser(dto) {
-//     return await request("/users", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(dto),
-//     });
-// }
-//
-// export async function updateUser(id, dto) {
-//     return await request(`/users/${encodeURIComponent(id)}`, {
-//         method: "PUT",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(dto),
-//     });
-// }
-//
-// export async function deleteUser(id) {
-//     return await request(`/users/${encodeURIComponent(id)}`, { method: "DELETE" });
-// }
+
+export async function createUser(dto: User) {
+    return await request("/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dto),
+    });
+}
+
+export async function updateUser(id : string, dto : User) {
+    return await request(`/users/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dto),
+    });
+}
+
+export async function deleteUser(id : string) {
+    return await request(`/users/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
 
 // SWAP REQUESTS
 
-// export async function getSwapRequests() {
-//     return await request("/swapRequests", { method: "GET" });
-// }
-//
+export async function getSwapRequests() {
+    return await request<SwapRequest[]>("/swapRequests", { method: "GET" });
+}
+
 // export async function getSwapRequestById(id) {
 //     return await request(`/swapRequests/${encodeURIComponent(id)}`, { method: "GET" });
 // }
-//
-// export async function createSwapRequest(dto) {
-//     return await request("/swapRequests", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(dto),
-//     });
-// }
-//
-// export async function updateSwapRequest(id, dto) {
-//     return await request(`/swapRequests/${encodeURIComponent(id)}`, {
-//         method: "PUT",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(dto),
-//     });
-// }
-//
-// export async function deleteSwapRequest(id) {
-//     return await request(`/swapRequests/${encodeURIComponent(id)}`, { method: "DELETE" });
-// }
+
+export async function createSwapRequest(dto : SwapRequest) {
+    return await request("/swapRequests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dto),
+    });
+}
+
+export async function updateSwapRequest(id : string, dto : SwapRequest) {
+    return await request(`/swapRequests/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dto),
+    });
+}
+
+export async function deleteSwapRequest(id : string) {
+    return await request(`/swapRequests/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
 //
 // // SCHEDULES
 //

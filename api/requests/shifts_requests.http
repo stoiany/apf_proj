@@ -32,4 +32,4 @@ DELETE {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
 GET {{baseUrl}}/shifts/stats
 
 ### Top 3 users by shifts count
-GET {{baseUrl}}/shifts/top3users?date=2026-06-01
+GET {{baseUrl}}/shifts/top3users?date=2026-05-01

@@ -1,4 +1,4 @@
-import {Shift} from "./types.ts";
+import {entity, Shift, SwapRequest, User} from "./types.ts";
 
 export function renderTableStatus(status : string, error:any = null) {
     const el = document.getElementById("tableStatus");
@@ -11,12 +11,15 @@ export function renderTableStatus(status : string, error:any = null) {
     else el.innerHTML = "";
 }
 
-export function renderTable(items:Shift[]) {
-    const tbody = document.getElementById("itemsTableBody") as HTMLElement;
-    const tableTime = { "morning": "Ранок", "day": "День", "evening": "Вечір" };
-    const tableStatus = { "scheduled": "Заплановано", "completed": "Виконано", "missed": "Пропущено" };
+export function renderTable(entity: entity, items:(Shift | User | SwapRequest)[]) {
+    if(entity === "shifts"){
+        const tbody = document.getElementById("itemsTableBody") as HTMLElement;
+        if (!tbody) return;
 
-    tbody.innerHTML = items.map((item, index) => `
+        const tableTime: Record<string, string> = { "morning": "Ранок", "day": "День", "evening": "Вечір" };
+        const tableStatus: Record<string, string> = { "scheduled": "Заплановано", "completed": "Виконано", "missed": "Пропущено" };
+
+        tbody.innerHTML = (items as Shift[]).map((item, index) => `
         <tr>
             <td>${index + 1}</td>
             <td>${item.date}</td>
@@ -25,79 +28,160 @@ export function renderTable(items:Shift[]) {
             <td>${tableStatus[item.status] || item.status}</td>
             <td>${item.comment || ""}</td>
             <td>
-                <button type="button" class="delete-btn" data-id="${item.id}">Delete</button>
-                <button type="button" class="edit-btn" data-id="${item.id}">Edit</button>
+                <button type="button" class="edit-btn" data-id="${item.id}" data-entity="shifts">Edit</button>
+                <button type="button" class="delete-btn" data-id="${item.id}" data-entity="shifts">Delete</button>
             </td>
         </tr>
     `).join("");
+
+    } else if(entity === "users"){
+        const tbody = document.getElementById("usersTableBody") as HTMLElement;
+        if (!tbody) return;
+
+        tbody.innerHTML = (items as User[]).map((item) => `
+        <tr>
+            <td>${item.id}</td>
+            <td>${item.username}</td>
+            <td>
+                <button type="button" class="edit-btn" data-id="${item.id}" data-entity="users">Edit</button>
+                <button type="button" class="delete-btn" data-id="${item.id}" data-entity="users">Delete</button>
+            </td>
+        </tr>
+    `).join("");
+    }
+
+    else if (entity === "swapRequests") {
+        const tbody = document.getElementById("swapRequestsTableBody") as HTMLElement;
+        if (!tbody) return;
+
+        const statusMap: Record<string, string> = { "pending": "Очікує", "approved": "Схвалено", "rejected": "Відхилено" };
+
+        tbody.innerHTML = (items as SwapRequest[]).map((item) => `
+        <tr>
+            <td>${item.requester}</td>
+            <td>${item.targetUser}</td>
+            <td>${(item as SwapRequest).shiftInfo || item.shiftId}</td>
+            <td>${statusMap[item.status || "pending"] || item.status}</td>
+            <td>
+                <button type="button" class="delete-btn" data-id="${item.id}" data-entity="swapRequests">Видалити</button>
+            </td>
+        </tr>
+    `).join("");
+    }
 }
 
-export function fillForm(item:Shift) {
-    (document.getElementById("dateInput") as HTMLInputElement).value = item.date;
-    (document.getElementById("timeSlotSelect") as HTMLInputElement).value = item.time;
-    (document.getElementById("nameInput") as HTMLInputElement).value = item.username;
-    (document.getElementById("statusInput") as HTMLInputElement).value = item.status;
-    (document.getElementById("commentInput") as HTMLInputElement).value = item.comment || "";
+export function fillForm(entity: entity, item: Shift | User | SwapRequest) {
+    if (entity === "shifts") {
+        const shift = item as Shift;
+        (document.getElementById("shift-date") as HTMLInputElement).value = shift.date;
+        (document.getElementById("shift-time") as HTMLInputElement).value = shift.time;
+        (document.getElementById("shift-username") as HTMLInputElement).value = shift.username;
+        (document.getElementById("shift-status") as HTMLInputElement).value = shift.status;
+        (document.getElementById("shift-comment") as HTMLInputElement).value = shift.comment || "";
+    } else if (entity === "users") {
+        const user = item as User;
+        (document.getElementById("user-name") as HTMLInputElement).value = user.username;
+    }
 }
 
-export function changeFormToEdit(id:string) {
-    (document.getElementById("formTitle") as HTMLElement).innerHTML = "Форма редагування запису";
-    (document.getElementById("actionButtons") as HTMLElement).innerHTML = `
-        <button type="button" class="save-button" data-id="${id}">Зберегти</button>
-        <button type="button" class="reset-button">Стерти</button>
-        <button type="button" class="cancelEdit-button">Відмінити</button>
+export function changeFormToEdit(form: HTMLFormElement, id:string) {
+    const title = form.querySelector(".form-title") as HTMLTitleElement;
+    const actionButtons = form.querySelector(".action-buttons") as HTMLElement;
+
+    if(form.dataset.editTitle){
+        title.innerHTML = form.dataset.editTitle;
+    }
+
+    actionButtons.innerHTML = `
+        <button type="submit" class="save-button" data-id="${id}">Зберегти</button>
+        <button type="reset" class="reset-button">Стерти</button>
+        <button type="reset" class="cancelEdit-button">Відмінити</button>
     `;
 }
 
-export function changeFormToCreate() {
-    (document.getElementById("formTitle") as HTMLElement).innerHTML = "Форма створення запису";
-    (document.getElementById("actionButtons") as HTMLElement).innerHTML = `
+export function changeFormToCreate(form: HTMLFormElement) {
+    const title = form.querySelector(".form-title") as HTMLTitleElement;
+    const actionButtons = form.querySelector(".action-buttons") as HTMLElement;
+
+    if(form.dataset.createTitle){
+        title.innerHTML = form.dataset.createTitle;
+    }
+
+    actionButtons.innerHTML = `
         <button type="submit" class="submit-button">Підтвердити</button>
-        <button type="button" class="reset-button">Стерти</button>
+        <button type="reset" class="reset-button">Стерти</button>
     `;
 }
 
-export function clearError(inputId:string, errorId:string){
-    (document.getElementById(inputId) as HTMLElement).classList.remove("invalid");
-    (document.getElementById(errorId) as HTMLElement).innerHTML = "";
+export function clearFieldError(form: HTMLFormElement, fieldName: string){
+    const input = form.querySelector(`[name="${fieldName}"]`) as HTMLElement;
+    const errorText = form.querySelector(`[data-error-for="${fieldName}"]`) as HTMLElement;
+
+    if(input) input.classList.remove("invalid");
+    if(errorText) errorText.innerHTML = "";
 }
 
-export function clearErrors(){
-    clearError("dateInput", "dateError");
-    clearError("timeSlotSelect", "timeError");
-    clearError("nameInput", "nameError");
-    clearError("commentInput", "commentError");
-    clearError("statusInput", "statusError");
+export function clearFormErrors(form: HTMLFormElement){
+    const invalidInputs = form.querySelectorAll(".invalid");
+    invalidInputs.forEach(input => input.classList.remove("invalid"));
+
+    const errorTexts = form.querySelectorAll("[data-error-for]");
+    errorTexts.forEach(error => error.innerHTML = "");
 }
 
-export function showError(inputId:string, errorId:string, message:string){
-    (document.getElementById(inputId) as HTMLElement).classList.add("invalid");
-    (document.getElementById(errorId) as HTMLElement).innerHTML = message;
+export function showFieldError(form: HTMLFormElement, fieldName: string, message: string){
+    const input = form.querySelector(`[name="${fieldName}"]`) as HTMLElement;
+    const errorText = form.querySelector(`[data-error-for="${fieldName}"]`) as HTMLElement;
+
+    if(input) input.classList.add("invalid");
+    if(errorText) errorText.innerHTML = message;
 }
 
-export function readForm() {
-    return {
-        id: Date.now().toString(),
-        date: (document.getElementById("dateInput") as HTMLInputElement).value,
-        time: (document.getElementById("timeSlotSelect") as HTMLInputElement).value,
-        username: (document.getElementById("nameInput") as HTMLInputElement).value,
-        status: (document.getElementById("statusInput") as HTMLInputElement).value,
-        comment: (document.getElementById("commentInput") as HTMLInputElement).value
-    } as Shift;
+export function showFormErrors(form: HTMLFormElement, errors: Record<string, string>){
+    clearFormErrors(form);
+
+    for(const fieldName in errors){
+        showFieldError(form, fieldName, errors[fieldName]);
+    }
 }
 
-export function clearForm() {
-    (document.getElementById("dateInput") as HTMLInputElement).value = "";
-    (document.getElementById("timeSlotSelect") as HTMLInputElement).value = "";
-    (document.getElementById("nameInput") as HTMLInputElement).value = "";
-    (document.getElementById("statusInput") as HTMLInputElement).value = "";
-    (document.getElementById("commentInput") as HTMLInputElement).value = "";
+export function readForm(form : HTMLFormElement): Record<string, string> {
+    const formData = new FormData(form);
+    return Object.fromEntries(formData.entries()) as Record<string, string>;
 }
 
-export function setFormLoading(isLoading:boolean) {
-    const buttons = document.querySelectorAll("#actionButtons button");
+export function setFormLoading(form: HTMLFormElement, isLoading: boolean) {
+    const buttons = form.querySelectorAll("button");
 
     buttons.forEach(btn => {
         (btn as HTMLButtonElement).disabled = isLoading;
     });
+}
+
+export function renderSwapCreationData(shifts: Shift[], users: User[]) {
+    const tbody = document.getElementById("swapsShiftsTableBody");
+    const select = document.getElementById("swap-receiver");
+
+    if (tbody) {
+        const tableTime: Record<string, string> = { "morning": "Ранок", "day": "День", "evening": "Вечір" };
+        tbody.innerHTML = shifts.map(shift => `
+        <tr>
+            <td>${shift.date}</td>
+            <td>${tableTime[shift.time] || shift.time}</td>
+            <td>${shift.username}</td>
+            <td>
+                <button type="button" class="select-shift-btn" 
+                    data-id="${shift.id}" 
+                    data-requester="${shift.username}"
+                    data-date="${shift.date}"
+                    data-time="${tableTime[shift.time] || shift.time}">Обрати</button>
+            </td>
+        </tr>
+        `).join("");
+    }
+
+    if (select) {
+        select.innerHTML = '<option value="">Оберіть користувача</option>' +
+            users.map(u => `<option value="${u.username}">${u.username}</option>`).join("");
+    }
 }

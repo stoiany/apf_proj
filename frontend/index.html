@@ -12,80 +12,117 @@
 <div class="container">
     <header>
         <h1>Чергування лабараторії (Варіант 11)</h1>
+        <nav class="navigation">
+            <button class="nav-btn" data-target="users-page" data-entity="users">Users</button>
+            <button class="nav-btn active" data-target="shifts-page" data-entity="shifts">Shifts</button>
+            <button class="nav-btn" data-target="swaprequests-page" data-entity="swapRequests">Swap Requests</button>
+            <button class="nav-btn" data-target="schedules-page" data-entity="schedules">Schedules</button>
+        </nav>
     </header>
     <main>
-        <form id="createForm">
-            <h2 id="formTitle">Форма створення запису</h2>
-            <div class="field">
-                <label for="dateInput">Дата</label>
-                <input id="dateInput" class="input" type="date"/>
-                <p class="error-text" id="dateError"></p>
-            </div>
-
-            <div class="field">
-                <label for="timeSlotSelect">Зміна</label>
-                <select id="timeSlotSelect">
-                    <option value="">Виберіть час чергування</option>
-                    <option value="morning">8:00 — 12:00</option>
-                    <option value="day">12:00 — 16:00</option>
-                    <option value="evening">16:00 — 20:00</option>
-                </select>
-                <p class="error-text" id="timeError"></p>
-            </div>
-
-            <div class="field">
-                <label for="nameInput">Користувач</label>
-                <input id="nameInput" class="input" type="text" placeholder="Вкажіть ім'я користувача"/>
-                <p class="error-text" id="nameError"></p>
-            </div>
-
-            <div class="field">
-                <label for="commentInput">Коментар</label>
-                <textarea id="commentInput" class="input" rows="3"></textarea>
-                <p class="error-text" id="commentError"></p>
-            </div>
-
-            <div class="field">
-                <label for="statusInput">Статус</label>
-                <select id="statusInput">
-                    <option value="">Виберіть статус чергування</option>
-                    <option value="scheduled">Заплановано</option>
-                    <option value="completed">Виконано</option>
-                    <option value="missed">Пропущено</option>
-                </select>
-                <p class="error-text" id="statusError"></p>
-            </div>
-
-            <div class="buttons" id="actionButtons">
-                <button type="submit" class="submit-button">Підтвердити</button>
-                <button type="button" class="reset-button">Стерти</button>
-            </div>
-        </form>
-
-        <section id="tableSection">
-            <h2>Записи</h2>
-            <div id="filteringSelect">
+        <section id="users-page" class="view hidden">
+            <form id="usersForm" data-create-title="Форма створення користувача" data-edit-title="Форма редагування користувача">
+                <h2 class="form-title">Форма створення користувача</h2>
                 <div class="field">
-                <label for="filterInput">Фільтрування</label>
-                <select id="filterInput">
-                    <option value="all">Всі записи</option>
-                    <option value="scheduled">Заплановано</option>
-                    <option value="completed">Виконано</option>
-                    <option value="missed">Пропущено</option>
-                </select>
+                    <label for="user-name">Ім'я користувача</label>
+                    <input id="user-name" name="username" class="input" type="text" placeholder="Введіть ім'я"/>
+                    <p class="error-text" data-error-for="username"></p>
                 </div>
+                <div class="buttons action-buttons">
+                    <button type="submit" class="submit-button">Зберегти</button>
+                    <button type="reset" class="reset-button">Стерти</button>
+                </div>
+            </form>
+
+            <section id="usersTableSection">
+                <h2>Список користувачів</h2>
+                <table id="usersTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ім'я користувача</th>
+                        <th>Дії</th>
+                    </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                    </tbody>
+                </table>
+            </section>
+        </section>
+
+        <section id="shifts-page" class="view">
+            <form id="shiftsForm" data-create-title="Форма створення запису" data-edit-title="Форма редагування запису">
+                <h2 id="formTitle" class="form-title">Форма створення запису</h2>
                 <div class="field">
-                <label for="sortInput">Сортування</label>
-                <select id="sortInput">
-                    <option value="default">За замовчуванням (як додано)</option>
-                    <option value="dateAsc">За датою (спочатку старі)</option>
-                    <option value="dateDesc">За датою (спочатку нові)</option>
-                </select>
+                    <label for="shift-date">Дата</label>
+                    <input id="shift-date" name="date" class="input" type="date"/>
+                    <p class="error-text" data-error-for="date"></p>
                 </div>
-            </div>
-            <div id="tableStatus"></div>
-            <table id="itemsTable">
-                <thead id="tableHead">
+
+                <div class="field">
+                    <label for="shift-time">Зміна</label>
+                    <select id="shift-time" name="time">
+                        <option value="">Виберіть час чергування</option>
+                        <option value="morning">8:00 — 12:00</option>
+                        <option value="day">12:00 — 16:00</option>
+                        <option value="evening">16:00 — 20:00</option>
+                    </select>
+                    <p class="error-text" data-error-for="time"></p>
+                </div>
+
+                <div class="field">
+                    <label for="shift-username">Користувач</label>
+                    <input id="shift-username" name="username" class="input" type="text" placeholder="Вкажіть ім'я користувача"/>
+                    <p class="error-text" data-error-for="username"></p>
+                </div>
+
+                <div class="field">
+                    <label for="shift-comment">Коментар</label>
+                    <textarea id="shift-comment" name="comment" class="input" rows="3"></textarea>
+                    <p class="error-text" data-error-for="comment"></p>
+                </div>
+
+                <div class="field">
+                    <label for="shift-status">Статус</label>
+                    <select id="shift-status" name="status">
+                        <option value="">Виберіть статус чергування</option>
+                        <option value="scheduled">Заплановано</option>
+                        <option value="completed">Виконано</option>
+                        <option value="missed">Пропущено</option>
+                    </select>
+                    <p class="error-text" data-error-for="status"></p>
+                </div>
+
+                <div class="buttons action-buttons" id="actionButtons">
+                    <button type="submit" class="submit-button">Підтвердити</button>
+                    <button type="reset" class="reset-button">Стерти</button>
+                </div>
+            </form>
+
+            <section id="tableSection">
+                <h2>Записи</h2>
+                <div id="filteringSelect">
+                    <div class="field">
+                        <label for="filterInput">Фільтрування</label>
+                        <select id="filterInput">
+                            <option value="all">Всі записи</option>
+                            <option value="scheduled">Заплановано</option>
+                            <option value="completed">Виконано</option>
+                            <option value="missed">Пропущено</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="sortInput">Сортування</label>
+                        <select id="sortInput">
+                            <option value="default">За замовчуванням (як додано)</option>
+                            <option value="dateAsc">За датою (спочатку старі)</option>
+                            <option value="dateDesc">За датою (спочатку нові)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="tableStatus"></div>
+                <table id="itemsTable">
+                    <thead id="tableHead">
                     <tr>
                         <th>#</th>
                         <th class="dateSort">Дата</th>
@@ -94,11 +131,90 @@
                         <th class="userSort">Статус</th>
                         <th>Коментар</th>
                     </tr>
-                </thead>
-                <tbody id="itemsTableBody">
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="itemsTableBody">
+                    </tbody>
+                </table>
+            </section>
         </section>
+
+        <section id="swaprequests-page" class="view hidden">
+            <div class="field">
+
+                <div class="navigation">
+                    <button class="nav-btn swaps-nav-list active">Список запитів</button>
+                    <button class="nav-btn swaps-nav-create">Створити новий</button>
+                </div>
+
+                <div id="swaps-list-view" class="field">
+                    <section>
+                        <h2>Існуючі запити на обмін</h2>
+                        <table id="swapRequestsTable">
+                            <thead>
+                            <tr>
+                                <th>Ініціатор</th>
+                                <th>Отримувач</th>
+                                <th>Зміна (Дата/Час)</th>
+                                <th>Статус</th>
+                                <th>Дії</th>
+                            </tr>
+                            </thead>
+                            <tbody id="swapRequestsTableBody">
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+
+                <div id="swaps-create-view" class="view hidden">
+                    <section class="field">
+                        <h2>Оберіть зміну для обміну</h2>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Час</th>
+                                <th>Власник</th>
+                                <th>Дія</th>
+                            </tr>
+                            </thead>
+                            <tbody id="swapsShiftsTableBody">
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <form id="swapRequestsForm" class="hidden" data-create-title="Створити запит на обмін">
+                        <h2 class="form-title">Створити запит на обмін</h2>
+
+                        <input type="hidden" name="shiftId" id="swap-shift-id">
+                        <input type="hidden" name="requester" id="swap-requester">
+
+                        <div class="field">
+                            <p><strong>Дата/Час:</strong> <span id="swap-shift-info">-</span></p>
+                            <p><strong>Ініціатор:</strong> <span id="swap-requester-info">-</span></p>
+                        </div>
+
+                        <div class="field">
+                            <label for="swap-receiver">Кому надіслати запит (Отримувач)</label>
+                            <select id="swap-receiver" name="targetUser" class="input">
+                                <option value="">Оберіть користувача</option>
+                            </select>
+                            <p class="error-text" data-error-for="targetUser"></p>
+                        </div>
+
+                        <div class="buttons action-buttons">
+                            <button type="submit" class="submit-button">Надіслати запит</button>
+                            <button type="button" class="reset-button" id="cancel-swap-btn">Скасувати</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="schedules-page" class="view hidden">
+            <h2>Розклад</h2>
+        </section>
+
     </main>
 </div>
 </body>

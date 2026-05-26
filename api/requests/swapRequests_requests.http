@@ -11,9 +11,9 @@ POST {{baseUrl}}/swapRequests
 Content-Type: application/json
 
 {
-  "requester": "Ihor",
-  "targetUser": "Marlboro",
-  "shiftId": "c2a54125-0a76-46b1-8469-3e1b90620a13"
+  "requester": "asdasdasd",
+  "targetUser": "asdasdasd",
+  "shiftId": "dc9221ba-f7a4-45f9-8ce8-1252d628eeb7"
 }
 
 ### PUT swap request
