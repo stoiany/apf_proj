@@ -247,9 +247,8 @@ document.addEventListener("submit", async (e) => {
     });
 });
 
-// --- ЛОГІКА ДЛЯ ЗАПИТІВ НА ОБМІН (SWAP REQUESTS) ---
+// SWAP REQUESTS
 
-// 1. Перемикання підвкладок "Список запитів" та "Створити новий"
 document.addEventListener("click", (e) => {
     const target = e.target as HTMLElement;
 
@@ -257,11 +256,9 @@ document.addEventListener("click", (e) => {
     const createBtn = target.closest(".swaps-nav-create");
 
     if (listBtn) {
-        // Робимо кнопки активними/неактивними
         document.querySelectorAll(".swaps-nav-list").forEach(b => b.classList.add("active"));
         document.querySelectorAll(".swaps-nav-create").forEach(b => b.classList.remove("active"));
 
-        // Перемикаємо видимість блоків
         document.getElementById("swaps-list-view")?.classList.remove("hidden");
         document.getElementById("swaps-create-view")?.classList.add("hidden");
     }
@@ -275,13 +272,12 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// 2. Вибір зміни для обміну (заповнення прихованих полів)
+// Вибір зміни для обміну
 document.addEventListener("click", (e) => {
     const target = e.target as HTMLElement;
     const selectShiftBtn = target.closest(".select-shift-btn") as HTMLButtonElement;
 
     if (selectShiftBtn) {
-        // Зчитуємо дані з кнопки, на яку клікнули
         const shiftId = selectShiftBtn.dataset.id;
         const requester = selectShiftBtn.dataset.requester;
         const date = selectShiftBtn.dataset.date;
@@ -289,22 +285,18 @@ document.addEventListener("click", (e) => {
 
         if (!shiftId || !requester) return;
 
-        // Показуємо форму
         const form = document.getElementById("swapRequestsForm") as HTMLFormElement;
         form.classList.remove("hidden");
 
-        // Записуємо дані у твої приховані інпути
         (document.getElementById("swap-shift-id") as HTMLInputElement).value = shiftId;
         (document.getElementById("swap-requester") as HTMLInputElement).value = requester;
 
-        // Виводимо інформацію для юзера текстом (щоб він бачив, що обрав)
         const shiftInfoEl = document.getElementById("swap-shift-info");
         const reqInfoEl = document.getElementById("swap-requester-info");
         if (shiftInfoEl) shiftInfoEl.innerText = `${date} (Час: ${time})`;
         if (reqInfoEl) reqInfoEl.innerText = requester;
     }
 
-    // Кнопка скасування форми
     if (target.id === "cancel-swap-btn") {
         const form = document.getElementById("swapRequestsForm") as HTMLFormElement;
         form.reset();
