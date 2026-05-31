@@ -72,6 +72,12 @@ async function loadData() {
                 }
                 return swap;
             });
+        } else if (currentEntity === "stats") {
+            const stats = await api.getShiftsStats() || [];
+            ui.renderStatsOverview(stats);
+
+            const users = await api.getUsers() || [];
+            ui.renderUserScheduleList(users);
         }
 
         if (!data || data.length === 0) {
@@ -301,6 +307,41 @@ document.addEventListener("click", (e) => {
         const form = document.getElementById("swapRequestsForm") as HTMLFormElement;
         form.reset();
         form.classList.add("hidden");
+    }
+});
+
+document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+    if (target.id === "load-top3-btn") {
+        const monthVal = (document.getElementById("top3-month-input") as HTMLInputElement).value;
+        if (!monthVal) return alert("Оберіть місяць!");
+
+        try {
+            const data = await api.getTop3Users(`${monthVal}-01`);
+            ui.renderTop3Users(data || []);
+        } catch (err) {
+            alert("Помилка завантаження топу");
+        }
+    }
+});
+
+document.addEventListener("change", async (e) => {
+    const target = e.target as HTMLElement;
+    if (target.id === "schedule-user-select") {
+        const userId = (target as HTMLSelectElement).value;
+        const tbody = document.getElementById("user-schedule-table-body");
+
+        if (!userId) {
+            if (tbody) tbody.innerHTML = "";
+            return;
+        }
+
+        try {
+            const shifts = await api.getScheduleByUserId(userId);
+            ui.renderUserScheduleTable(shifts || []);
+        } catch (err) {
+            alert("Помилка завантаження розкладу");
+        }
     }
 });
 

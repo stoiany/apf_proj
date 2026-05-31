@@ -1,4 +1,4 @@
-import {entity, Shift, SwapRequest, User} from "./types.ts";
+import {entity, Shift, ShiftStat, SwapRequest, TopUser, User} from "./types.ts";
 
 export function renderTableStatus(status : string, error:any = null) {
     const el = document.getElementById("tableStatus");
@@ -184,4 +184,56 @@ export function renderSwapCreationData(shifts: Shift[], users: User[]) {
         select.innerHTML = '<option value="">Оберіть користувача</option>' +
             users.map(u => `<option value="${u.username}">${u.username}</option>`).join("");
     }
+}
+
+export function renderStatsOverview(stats: ShiftStat[]) {
+    const container = document.getElementById("stats-container");
+    if (!container) return;
+    const statusMap: Record<string, string> = { "scheduled": "Заплановано", "completed": "Виконано", "missed": "Пропущено" };
+
+    container.innerHTML = stats.map(s => `
+        <div class="nav-btn" style="cursor: default;">
+            ${statusMap[s.status] || s.status}: <strong>${s.count}</strong>
+        </div>
+    `).join("");
+}
+
+export function renderTop3Users(users: TopUser[]) {
+    const tbody = document.getElementById("top3-table-body");
+    if (!tbody) return;
+    if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3">Немає даних</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = users.map((u, index) => `
+        <tr><td>${index + 1}</td><td>${u.username}</td><td>${u.count}</td></tr>
+    `).join("");
+}
+
+export function renderUserScheduleList(users: User[]) {
+    const select = document.getElementById("schedule-user-select");
+    if (!select) return;
+    select.innerHTML = '<option value="">Оберіть користувача</option>' +
+        users.map(u => `<option value="${u.id}">${u.username}</option>`).join("");
+}
+
+export function renderUserScheduleTable(shifts: Shift[]) {
+    const tbody = document.getElementById("user-schedule-table-body");
+    if (!tbody) return;
+    if (shifts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5">Немає змін</td></tr>`;
+        return;
+    }
+    const timeMap: Record<string, string> = { "morning": "Ранок", "day": "День", "evening": "Вечір" };
+    const statusMap: Record<string, string> = { "scheduled": "Заплановано", "completed": "Виконано", "missed": "Пропущено" };
+
+    tbody.innerHTML = shifts.map((item, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${item.date}</td>
+            <td>${timeMap[item.time] || item.time}</td>
+            <td>${item.username}</td>
+            <td>${statusMap[item.status] || item.status}</td>
+        </tr>
+    `).join("");
 }

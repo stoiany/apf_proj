@@ -16,7 +16,7 @@
             <button class="nav-btn" data-target="users-page" data-entity="users">Users</button>
             <button class="nav-btn active" data-target="shifts-page" data-entity="shifts">Shifts</button>
             <button class="nav-btn" data-target="swaprequests-page" data-entity="swapRequests">Swap Requests</button>
-            <button class="nav-btn" data-target="schedules-page" data-entity="schedules">Schedules</button>
+            <button class="nav-btn" data-target="stats-page" data-entity="stats">Stats</button>
         </nav>
     </header>
     <main>
@@ -211,8 +211,59 @@
             </div>
         </section>
 
-        <section id="schedules-page" class="view hidden">
-            <h2>Розклад</h2>
+        <section id="stats-page" class="view hidden">
+
+            <section id="statsOverviewSection" class="field">
+                <h2>Загальна статистика змін</h2>
+                <div id="stats-container" class="buttons">
+                </div>
+            </section>
+
+            <section id="statsTopSection" class="field">
+                <h2>Топ-3 юзерів за місяць</h2>
+                <div class="field">
+                    <label for="top3-month-input">Оберіть місяць у форматі YYYY-MM</label>
+                    <input type="month" id="top3-month-input" class="input">
+                </div>
+                <div class="buttons">
+                    <button type="button" id="load-top3-btn">Показати топ</button>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Місце</th>
+                        <th>Ім'я користувача</th>
+                        <th>Кількість змін</th>
+                    </tr>
+                    </thead>
+                    <tbody id="top3-table-body">
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="statsUserSection" class="field">
+                <h2>Розклад користувача</h2>
+                <div class="field">
+                    <label for="schedule-user-select">Оберіть користувача для відображення його змін</label>
+                    <select id="schedule-user-select" class="input">
+                        <option value="">Оберіть користувача</option>
+                    </select>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Дата</th>
+                        <th>Час</th>
+                        <th>Користувач</th>
+                        <th>Статус</th>
+                    </tr>
+                    </thead>
+                    <tbody id="user-schedule-table-body">
+                    </tbody>
+                </table>
+            </section>
+
         </section>
 
     </main>

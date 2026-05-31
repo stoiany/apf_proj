@@ -36,6 +36,16 @@ export interface ValidationRule {
     };
 }
 
+export interface ShiftStat {
+    status: string;
+    count: number;
+}
+
+export interface TopUser {
+    username: string;
+    count: number;
+}
+
 export type ValidationSchema = Record<string, ValidationRule>;
 
 export const shiftSchema: ValidationSchema = {
@@ -82,4 +92,4 @@ export const formSchemas: Record<string, ValidationSchema> = {
     swapRequestsForm: swapRequestSchema
 }
 
-export type entity = "shifts" | "users" | "swapRequests";
+export type entity = "shifts" | "users" | "swapRequests" | "stats";
