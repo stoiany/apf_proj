@@ -14,6 +14,7 @@ export async function readShiftsRepo(
     dto : shiftQueryParamsDto
 ): Promise<shiftResponseDto[]> {
     const db = await getDb();
+    const params : any[] = [];
 
     let sql = `
         SELECT Shifts.id, 
@@ -29,11 +30,13 @@ export async function readShiftsRepo(
     `;
 
     if (dto.userId) {
-        sql += ` AND Shifts.userId = '${dto.userId}'`;
+        sql += ` AND Shifts.userId = ?`;
+        params.push(dto.userId);
     }
 
     if (dto.status) {
-        sql += ` AND Shifts.status = '${dto.status}'`;
+        sql += ` AND Shifts.status = ?`;
+        params.push(dto.status);
     }
 
     if(dto.sortBy){
@@ -42,7 +45,7 @@ export async function readShiftsRepo(
         sql += ` ORDER BY ${dto.sortBy} ${dir}`;
     }
 
-    const rows = await db.all<shiftResponseRow[]>(sql);
+    const rows = await db.all<shiftResponseRow[]>(sql, params);
 
     return rows.map((row : shiftResponseRow) => {
         return {
@@ -70,10 +73,10 @@ export async function readShiftByIdRepo(targetId : targetIdDto) : Promise<shiftR
                Shifts.createdAt
         FROM Shifts
                  JOIN Users ON Shifts.userId = Users.id
-        WHERE Shifts.id = '${targetId}';
+        WHERE Shifts.id = ?;
     `;
 
-    const row = await db.get<shiftResponseRow>(sql);
+    const row = await db.get<shiftResponseRow>(sql, [targetId]);
 
     if(!row){
         return null;
@@ -94,12 +97,12 @@ export async function checkShiftCollisionRepo(date: string, time: ShiftTime): Pr
     const db = await getDb();
     const sql = `
         SELECT 1 FROM Shifts 
-        WHERE date = '${date}' 
-          AND time = '${time}' 
+        WHERE date = ? 
+          AND time = ? 
           AND status != 'canceled' 
         LIMIT 1
     `;
-    const row = await db.get(sql);
+    const row = await db.get(sql, [date, time]);
 
     return !!row;
 }
@@ -108,30 +111,27 @@ export async function checkShiftCollisionOnUpdateRepo(date: string, time: ShiftT
     const db = await getDb();
     const sql = `
         SELECT 1 FROM Shifts 
-        WHERE date = '${date}' 
-          AND time = '${time}' 
+        WHERE date = ? 
+          AND time = ? 
           AND status != 'canceled' 
-          AND id != '${shiftId}'
+          AND id != ?
         LIMIT 1
     `;
-    const row = await db.get(sql);
+    const row = await db.get(sql, [date, time, shiftId]);
 
     return !!row;
 }
 
 export async function createShiftRepo(dto : createShiftDto): Promise<shiftResponseDto> {
     const db = await getDb();
-    const safeComment = dto.comment ? `'${dto.comment.replace(/'/g, "''")}'` : "NULL";
 
     const shiftId = crypto.randomUUID();
     const createdAt = new Date().toISOString();
 
-    const safeUsername = dto.username.replace(/'/g, "''");
-
     await db.run("BEGIN TRANSACTION");
 
     try {
-        const user = await readUserByUsername(safeUsername);
+        const user = await readUserByUsername(dto.username);
         let userId: string;
         if (!user) {
             const newUser = await createUserRepo({username: dto.username});
@@ -142,10 +142,10 @@ export async function createShiftRepo(dto : createShiftDto): Promise<shiftRespon
 
         const sql = `
         INSERT INTO Shifts (id, userId, date, time, status, comment, createdAt)
-        VALUES ('${shiftId}', '${userId}', '${dto.date}', '${dto.time}', '${dto.status}', ${safeComment}, '${createdAt}')
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
 
-        await db.run(sql);
+        await db.run(sql, [shiftId, userId, dto.date, dto.time, dto.status, dto.comment, createdAt]);
 
         await db.run("COMMIT");
 
@@ -173,11 +173,10 @@ export async function updateShiftRepo(
 
     let finalUsername = String(existingShift.username);
     let updateFields: string[] = [];
+    const params: any[] = [];
 
     if (dto.username !== undefined) {
-        const safeUsername = dto.username.replace(/'/g, "''");
-
-        const user = await readUserByUsername(safeUsername);
+        const user = await readUserByUsername(dto.username);
         let userId : string;
         if(!user){
             const newUser = await createUserRepo({username : dto.username});
@@ -187,20 +186,31 @@ export async function updateShiftRepo(
         }
 
         finalUsername = dto.username;
-        updateFields.push(`userId = '${userId}'`);
+        updateFields.push(`userId = ?`);
+        params.push(userId);
     }
 
-    if (dto.status !== undefined) updateFields.push(`status = '${dto.status}'`);
-    if (dto.date !== undefined) updateFields.push(`date = '${dto.date}'`);
-    if (dto.time !== undefined) updateFields.push(`time = '${dto.time}'`);
+    if (dto.status !== undefined){
+        updateFields.push(`status = ?`);
+        params.push(dto.status);
+    }
+    if (dto.date !== undefined){
+        updateFields.push(`date = ?`);
+        params.push(dto.date);
+    }
+    if (dto.time !== undefined) {
+        updateFields.push(`time = ?`);
+        params.push(dto.time);
+    }
     if (dto.comment !== undefined) {
-        const safeComment = dto.comment ? `'${dto.comment.replace(/'/g, "''")}'` : "NULL";
-        updateFields.push(`comment = ${safeComment}`);
+        updateFields.push(`comment = ?`);
+        params.push(dto.comment);
     }
 
     if (updateFields.length > 0) {
-        const sql = `UPDATE Shifts SET ${updateFields.join(", ")} WHERE id = '${targetId}'`;
-        await db.run(sql);
+        params.push(targetId);
+        const sql = `UPDATE Shifts SET ${updateFields.join(", ")} WHERE id = ?`;
+        await db.run(sql, params);
     }
 
     return {
@@ -216,7 +226,7 @@ export async function updateShiftRepo(
 
 export async function deleteShiftRepo(targetId : targetIdDto): Promise<number> {
     const db = await getDb();
-    const result = await db.run(`DELETE FROM Shifts WHERE id = '${targetId}'`);
+    const result = await db.run(`DELETE FROM Shifts WHERE id = ?`, [targetId]);
 
     return result.changes ?? 0;
 }
@@ -243,12 +253,12 @@ export async function getTop3UsersByShiftCountRepo(date : string): Promise<{ use
                COUNT(s.id) as count 
         FROM Shifts s
         JOIN Users u ON s.userId = u.id
-        WHERE s.date LIKE '%${date}%'
+        WHERE s.date LIKE ?
         GROUP BY u.username
         ORDER BY count DESC
         LIMIT 3
     `;
-    const rows = await db.all(sql);
+    const rows = await db.all(sql, [`%${date}%`]);
 
     return rows.map((row: any) => ({
         username: String(row.username),
