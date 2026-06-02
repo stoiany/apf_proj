@@ -208,6 +208,8 @@ document.addEventListener("submit", async (e) => {
         await loadData();
     } catch(err) {
         const errStatus = (err as any)?.status || String(err);
+        const errMessage = (err as any)?.message || "Невідома помилка";
+
         if (errStatus === 404) {
             alert("Редагований запис не знайдено.");
             form.reset();
@@ -216,11 +218,13 @@ document.addEventListener("submit", async (e) => {
         } else if (errStatus === 409) {
             alert("Такий запис вже існує.");
             await loadData();
+        } else if (errStatus === 403) {
+            alert(`Відмовлено в доступі: ${errMessage}`);
         } else {
-            alert(`Помилка сервера: ${errStatus}`);
+            alert(`Помилка сервера: ${errStatus} - ${errMessage}`);
         }
     } finally {
-        ui.setFormLoading(form,     false);
+        ui.setFormLoading(form, false);
     }
 });
 
