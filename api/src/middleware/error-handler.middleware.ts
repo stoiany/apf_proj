@@ -28,7 +28,7 @@ export function errorHandler(
         if (dbError.code === "SQLITE_CONSTRAINT") {
             return res.status(409).json({
                 code: "DB_CONSTRAINT_VIOLATION",
-                message: "Database constraint failed: " + dbError.message
+                message: "Data conflict. The resource you are trying to create already exists or violates rules."
             });
         }
 

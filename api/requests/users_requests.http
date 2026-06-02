@@ -1,12 +1,17 @@
 @baseUrl = http://localhost:3000/api/v1
+@demoUserId = 79937751-986b-4492-b86e-f7347a31b6ff
+
 ### GET all users
 GET {{baseUrl}}/users?sortBy=username&sortDir=asc
+X-Demo-UserId: {{demoUserId}}
 
 ### GET user by id
 GET {{baseUrl}}/users/e971b1a1-845a-42b9-8b33-60e24fb2f529
+X-Demo-UserId: {{demoUserId}}
 
 ### POST user
 POST {{baseUrl}}/users/
+X-Demo-UserId: {{demoUserId}}
 Content-Type: application/json
 
 {
@@ -15,6 +20,7 @@ Content-Type: application/json
 
 ### PUT user
 PUT {{baseUrl}}/users/e971b1a1-845a-42b9-8b33-60e24fb2f529
+X-Demo-UserId: {{demoUserId}}
 Content-Type: application/json
 
 {
@@ -23,3 +29,4 @@ Content-Type: application/json
 
 ### DELETE user
 DELETE {{baseUrl}}/users/e971b1a1-845a-42b9-8b33-60e24fb2f529
+X-Demo-UserId: {{demoUserId}}

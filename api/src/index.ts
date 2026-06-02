@@ -22,6 +22,17 @@ const allowedOrigins = [
     "http://127.0.0.1:5173"
 ]
 
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+    // заборона  браузеру вгадувати тип контенту (захист від підміни MIME-типів)
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    // заборона вставлення сайту у <iframe> (захист від Clickjacking)
+    res.setHeader('X-Frame-Options', 'DENY');
+    // включення вбудованого у старі браузери XSS-фільтру
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+});
+
 app.use(cors({
     origin: (origin, cb) => {
         if (!origin) return cb(null, true);
