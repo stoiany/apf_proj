@@ -8,6 +8,7 @@ import {
 import {NextFunction, Request, Response} from "express";
 import {createUserDto, updateUserDto, userQueryParamsDto} from "../schemas/users.schemas";
 import {targetIdDto} from "../schemas/other.schemas";
+import {ApiError} from "../middleware/ApiError.class";
 
 export async function getUsers(req: Request, res: Response, next: NextFunction) : Promise<void> {
     try {
@@ -43,6 +44,10 @@ export async function putUser(req: Request, res: Response, next: NextFunction) {
     try {
         const targetId : targetIdDto = req.params.id as string;
         const dto : updateUserDto = req.body;
+        const currentUserId = req.user!.id;
+        if (targetId !== currentUserId) {
+            return next(new ApiError(403, "FORBIDDEN", "Access denied. You can only edit your own profile."));
+        }
         const responseDto = await updateUser(dto, targetId);
         res.status(200).json(responseDto);
     } catch (err) {
@@ -53,6 +58,10 @@ export async function putUser(req: Request, res: Response, next: NextFunction) {
 export async function deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
         const targetId : targetIdDto = req.params.id as string;
+        const currentUserId = req.user!.id;
+        if (targetId !== currentUserId) {
+            return next(new ApiError(403, "FORBIDDEN", "Access denied. You can only delete your own profile."));
+        }
         await removeUser(targetId);
         res.status(204).send();
     } catch (err) {
