@@ -1,5 +1,12 @@
 import {entity, Shift, ShiftStat, SwapRequest, TopUser, User} from "./types.ts";
 
+function safe(text: string | undefined): string {
+    if (!text) return "";
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
 export function renderTableStatus(status : string, error:any = null) {
     const el = document.getElementById("tableStatus");
     if (!el) return;
@@ -7,7 +14,7 @@ export function renderTableStatus(status : string, error:any = null) {
     const errText = error?.message || String(error);
     if (status === "loading") el.innerHTML = "<p>Завантаження даних...</p>";
     else if (status === "empty") el.innerHTML = "<p>Записів поки що немає.</p>";
-    else if (status === "error") el.innerHTML = `<p>Помилка: ${errText}</p>`;
+    else if (status === "error") el.innerHTML = `<p>Помилка: ${safe(errText)}</p>`;
     else el.innerHTML = "";
 }
 
@@ -24,9 +31,9 @@ export function renderTable(entity: entity, items:(Shift | User | SwapRequest)[]
             <td>${index + 1}</td>
             <td>${item.date}</td>
             <td>${tableTime[item.time] || item.time}</td>
-            <td>${item.username}</td>
+            <td>${safe(item.username)}</td>
             <td>${tableStatus[item.status] || item.status}</td>
-            <td>${item.comment || ""}</td>
+            <td>${safe(item.comment) || ""}</td>
             <td>
                 <button type="button" class="edit-btn" data-id="${item.id}" data-entity="shifts">Edit</button>
                 <button type="button" class="delete-btn" data-id="${item.id}" data-entity="shifts">Delete</button>
@@ -41,7 +48,7 @@ export function renderTable(entity: entity, items:(Shift | User | SwapRequest)[]
         tbody.innerHTML = (items as User[]).map((item) => `
         <tr>
             <td>${item.id}</td>
-            <td>${item.username}</td>
+            <td>${safe(item.username)}</td>
             <td>
                 <button type="button" class="edit-btn" data-id="${item.id}" data-entity="users">Edit</button>
                 <button type="button" class="delete-btn" data-id="${item.id}" data-entity="users">Delete</button>
@@ -58,9 +65,9 @@ export function renderTable(entity: entity, items:(Shift | User | SwapRequest)[]
 
         tbody.innerHTML = (items as SwapRequest[]).map((item) => `
         <tr>
-            <td>${item.requester}</td>
-            <td>${item.targetUser}</td>
-            <td>${(item as SwapRequest).shiftInfo || item.shiftId}</td>
+            <td>${safe(item.requester)}</td>
+            <td>${safe(item.targetUser)}</td>
+            <td>${safe((item as SwapRequest).shiftInfo || item.shiftId)}</td>
             <td>${statusMap[item.status || "pending"] || item.status}</td>
             <td>
                 <button type="button" class="delete-btn" data-id="${item.id}" data-entity="swapRequests">Видалити</button>
@@ -168,11 +175,11 @@ export function renderSwapCreationData(shifts: Shift[], users: User[]) {
         <tr>
             <td>${shift.date}</td>
             <td>${tableTime[shift.time] || shift.time}</td>
-            <td>${shift.username}</td>
+            <td>${safe(shift.username)}</td>
             <td>
                 <button type="button" class="select-shift-btn" 
                     data-id="${shift.id}" 
-                    data-requester="${shift.username}"
+                    data-requester="${safe(shift.username)}"
                     data-date="${shift.date}"
                     data-time="${tableTime[shift.time] || shift.time}">Обрати</button>
             </td>
@@ -182,7 +189,7 @@ export function renderSwapCreationData(shifts: Shift[], users: User[]) {
 
     if (select) {
         select.innerHTML = '<option value="">Оберіть користувача</option>' +
-            users.map(u => `<option value="${u.username}">${u.username}</option>`).join("");
+            users.map(u => `<option value="${u.username}">${safe(u.username)}</option>`).join("");
     }
 }
 
@@ -206,7 +213,7 @@ export function renderTop3Users(users: TopUser[]) {
         return;
     }
     tbody.innerHTML = users.map((u, index) => `
-        <tr><td>${index + 1}</td><td>${u.username}</td><td>${u.count}</td></tr>
+        <tr><td>${index + 1}</td><td>${safe(u.username)}</td><td>${u.count}</td></tr>
     `).join("");
 }
 
@@ -214,7 +221,7 @@ export function renderUserScheduleList(users: User[]) {
     const select = document.getElementById("schedule-user-select");
     if (!select) return;
     select.innerHTML = '<option value="">Оберіть користувача</option>' +
-        users.map(u => `<option value="${u.id}">${u.username}</option>`).join("");
+        users.map(u => `<option value="${u.id}">${safe(u.username)}</option>`).join("");
 }
 
 export function renderUserScheduleTable(shifts: Shift[]) {
@@ -232,7 +239,7 @@ export function renderUserScheduleTable(shifts: Shift[]) {
             <td>${index + 1}</td>
             <td>${item.date}</td>
             <td>${timeMap[item.time] || item.time}</td>
-            <td>${item.username}</td>
+            <td>${safe(item.username)}</td>
             <td>${statusMap[item.status] || item.status}</td>
         </tr>
     `).join("");
