@@ -9,8 +9,20 @@ async function request<T>(path : string, options : RequestInit = {}) : Promise<T
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
+    const defaultHeaders : Record<string, string> = {
+        "X-Demo-UserId": "79937751-986b-4492-b86e-f7347a31b6ff"
+    }
+
+    const finalOptions : RequestInit = {
+        ...options,
+        headers: {
+            ...defaultHeaders,
+            ...options.headers
+        }
+    }
+
     try {
-        response = await fetch(url, {...options, signal: controller.signal });
+        response = await fetch(url, {...finalOptions, signal: controller.signal });
 
         clearTimeout(timeoutId);
 

@@ -161,3 +161,24 @@ export async function deleteSwapRequestRepo(id: string): Promise<number> {
     const result = await db.run(`DELETE FROM SwapRequests WHERE id = ?`, [id]);
     return result.changes ?? 0;
 }
+
+export async function checkIsSwapRequesterRepo(swapRequestId: string, currentUserId: string): Promise<boolean> {
+    const db = await getDb();
+
+    const sql = `SELECT 1 FROM SwapRequests WHERE id = ? AND requesterId = ?`;
+    const row = await db.get(sql, [swapRequestId, currentUserId]);
+
+    return !!row;
+}
+
+export async function checkIsSwapParticipantRepo(swapRequestId: string, currentUserId: string): Promise<boolean> {
+    const db = await getDb();
+
+    const sql = `
+        SELECT 1 FROM SwapRequests 
+        WHERE id = ? AND (requesterId = ? OR targetUserId = ?)
+    `;
+    const row = await db.get(sql, [swapRequestId, currentUserId, currentUserId]);
+
+    return !!row;
+}

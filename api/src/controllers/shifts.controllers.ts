@@ -8,6 +8,8 @@ import {
 } from "../services/shifts.services";
 import {createShiftDto, dateDto, shiftQueryParamsDto, updateShiftDto} from "../schemas/shift.schemas";
 import {targetIdDto} from "../schemas/other.schemas";
+import {checkShiftOwnershipRepo} from "../repositories/shifts.repo";
+import {ApiError} from "../middleware/ApiError.class";
 
 export async function getShifts(req: Request, res: Response, next: NextFunction) {
     try {
@@ -43,6 +45,11 @@ export async function putShift(req: Request, res: Response, next: NextFunction) 
     try {
         const targetId: targetIdDto = req.params.id as string;
         const dto: updateShiftDto = req.body;
+        const userId = req.user!.id;
+        const isOwner = await checkShiftOwnershipRepo(targetId, userId);
+        if(!isOwner){
+            return next(new ApiError(403, "FORBIDDEN", "Access denied. You are not the owner of this shift."));
+        }
         const responseDto = await updateShift(dto, targetId);
         res.status(200).json(responseDto);
     } catch (err) {
@@ -53,6 +60,11 @@ export async function putShift(req: Request, res: Response, next: NextFunction) 
 export async function deleteShift(req: Request, res: Response, next: NextFunction) {
     try {
         const targetId: targetIdDto = req.params.id as string;
+        const userId = req.user!.id;
+        const isOwner = await checkShiftOwnershipRepo(targetId, userId);
+        if(!isOwner){
+            return next(new ApiError(403, "FORBIDDEN", "Access denied. You are not the owner of this shift."));
+        }
         await removeShift(targetId);
         res.status(204).send();
     } catch (err) {

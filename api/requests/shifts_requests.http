@@ -1,23 +1,29 @@
 @baseUrl = http://localhost:3000/api/v1
+@demoUserId = 79937751-986b-4492-b86e-f7347a31b6ff
+
 ### GET all shifts
 GET {{baseUrl}}/shifts?sortBy=date
+X-Demo-UserId: {{demoUserId}}
 
 ### GET shift by id
 GET {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
+X-Demo-UserId: {{demoUserId}}
 
 ### POST shift
 POST {{baseUrl}}/shifts
+X-Demo-UserId: {{demoUserId}}
 Content-Type: application/json
 
 {
-  "username": "Yaroslav",
-  "date": "2026-06-21",
+  "username": "YStoian",
+  "date": "2026-06-23",
   "time": "morning",
   "status": "completed"
 }
 
 ### PUT shift
 PUT {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
+X-Demo-UserId: {{demoUserId}}
 Content-Type: application/json
 
 {
@@ -26,10 +32,13 @@ Content-Type: application/json
 }
 
 ### DELETE shift
-DELETE {{baseUrl}}/shifts/85f6a9a3-dcc5-42d0-86cc-4dea61088d1d
+DELETE {{baseUrl}}/shifts/7fcd63ee-a304-4d6f-8eac-ded31c7d2603
+X-Demo-UserId: {{demoUserId}}
 
 ### Stats on shifts
 GET {{baseUrl}}/shifts/stats
+X-Demo-UserId: {{demoUserId}}
 
 ### Top 3 users by shifts count
 GET {{baseUrl}}/shifts/top3users?date=2026-05-01
+X-Demo-UserId: {{demoUserId}}

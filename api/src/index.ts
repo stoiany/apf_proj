@@ -11,6 +11,7 @@ import { swapRequestsRouter } from "./routes/swapRequests.routes";
 import { schedulesRouter } from "./routes/schedules.routes";
 import {migrate} from "./db/migrate";
 import {ApiError} from "./middleware/ApiError.class";
+import {demoAuth} from "./middleware/demoAuth.middleware";
 
 const app = express();
 app.use(loggingMiddleware);
@@ -36,10 +37,12 @@ app.use(cors({
         return cb(callbackError, false);
     },
     methods: ["GET", "POST", "PUT", "OPTIONS", "DELETE"],
-    allowedHeaders: ["Content-Type"]
+    allowedHeaders: ["Content-Type", "X-Demo-UserId"]
 }));
 
 app.options(/.*/, cors());
+
+app.use(demoAuth);
 
 app.use("/api/v1/shifts", shiftRouter);
 app.use("/api/v1/users", userRouter);

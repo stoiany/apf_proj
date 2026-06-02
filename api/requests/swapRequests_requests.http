@@ -1,13 +1,17 @@
 @baseUrl = http://localhost:3000/api/v1
+@demoUserId = 79937751-986b-4492-b86e-f7347a31b6ff
 
 ### GET all swap requests
 GET {{baseUrl}}/swapRequests?sortBy=createdAt&sortDir=asc
+X-Demo-UserId: {{demoUserId}}
 
 ### Get swap request by id
 GET {{baseUrl}}/swapRequests/d2773ca2-d632-48a6-9e78-12ddd471ad24
+X-Demo-UserId: {{demoUserId}}
 
 ### POST swap request
 POST {{baseUrl}}/swapRequests
+X-Demo-UserId: {{demoUserId}}
 Content-Type: application/json
 
 {
@@ -17,15 +21,17 @@ Content-Type: application/json
 }
 
 ### PUT swap request
-PUT {{baseUrl}}/swapRequests/e289de23-8266-4201-9534-a7e2aa7545d2
+PUT {{baseUrl}}/swapRequests/805f654f-e4ee-4050-b4af-46d90e0ffb47
+X-Demo-UserId: {{demoUserId}}
 Content-Type: application/json
 
 {
-  "requester": "Ihor",
-  "targetUser": "Marlboro",
-  "shiftId": "c2a54125-0a76-46b1-8469-3e1b90620a13",
+  "requester": "YStoian",
+  "targetUser": "asd",
+  "shiftId": "13cb3a7d-8c4e-47b1-bc7b-02c9e6bdb6e2",
   "status": "approved"
 }
 
 ### DELETE swap req
-DELETE {{baseUrl}}/swapRequests/e289de23-8266-4201-9534-a7e2aa7545d2
+DELETE {{baseUrl}}/swapRequests/805f654f-e4ee-4050-b4af-46d90e0ffb47
+X-Demo-UserId: {{demoUserId}}

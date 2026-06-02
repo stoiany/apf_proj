@@ -265,3 +265,21 @@ export async function getTop3UsersByShiftCountRepo(date : string): Promise<{ use
         count: Number(row.count)
     }));
 }
+
+// export async function checkUserMatchesUsernameRepo(currentUserId: string, targetUsername: string): Promise<boolean> {
+//     const db = await getDb();
+//
+//     const sql = `SELECT username FROM Users WHERE id = ?`;
+//     const row = await db.get<{username: string}>(sql, [currentUserId]);
+//
+//     return !(!row || row.username !== targetUsername);
+// }
+
+export async function checkShiftOwnershipRepo(shiftId: string, currentUserId: string): Promise<boolean> {
+    const db = await getDb();
+
+    const sql = `SELECT 1 FROM Shifts WHERE id = ? AND userId = ?`;
+    const row = await db.get(sql, [shiftId, currentUserId]);
+
+    return !!row;
+}
