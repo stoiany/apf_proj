@@ -16,8 +16,9 @@ Content-Type: application/json
 
 {
   "username": "YStoian",
-  "date": "2026-06-23",
+  "date": "2026-06-25",
   "time": "morning",
+  "comment": "'asdasd' WHERE 1=1 --",
   "status": "completed"
 }
 
@@ -41,4 +42,8 @@ X-Demo-UserId: {{demoUserId}}
 
 ### Top 3 users by shifts count
 GET {{baseUrl}}/shifts/top3users?date=2026-05-01
+X-Demo-UserId: {{demoUserId}}
+
+### Top 3 users by time
+GET {{baseUrl}}/shifts/top3usersByTime?time=morning
 X-Demo-UserId: {{demoUserId}}

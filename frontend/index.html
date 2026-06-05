@@ -130,6 +130,7 @@
                         <th class="userSort">Користувач</th>
                         <th class="userSort">Статус</th>
                         <th>Коментар</th>
+                        <th>Дії</th>
                     </tr>
                     </thead>
                     <tbody id="itemsTableBody">
@@ -220,7 +221,7 @@
             </section>
 
             <section id="statsTopSection" class="field">
-                <h2>Топ-3 юзерів за місяць</h2>
+                <h2>Топ-3 юзерів за місяцем</h2>
                 <div class="field">
                     <label for="top3-month-input">Оберіть місяць у форматі YYYY-MM</label>
                     <input type="month" id="top3-month-input" class="input">
@@ -237,6 +238,34 @@
                     </tr>
                     </thead>
                     <tbody id="top3-table-body">
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="statsTopByTimeSection" class="field">
+                <h2>Топ-3 юзерів за часом зміни</h2>
+                <div class="field">
+                    <label for="top3-time-input"></label>
+                    <select id="top3-time-input">
+                        <option value="">Виберіть час зміни</option>
+                        <option value="morning">Ранок</option>
+                        <option value="day">День</option>
+                        <option value="evening">Вечір</option>
+                    </select>
+                </div>
+                <div class="buttons">
+                    <button type="button" id="load-top3-by-time-btn">Показати топ</button>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Місце</th>
+                        <th>Ім'я користувача</th>
+                        <th>Кількість змін</th>
+                        <th>Дія</th>
+                    </tr>
+                    </thead>
+                    <tbody id="top3-by-time-table-body">
                     </tbody>
                 </table>
             </section>

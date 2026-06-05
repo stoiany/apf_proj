@@ -1,4 +1,4 @@
-import {Shift, ShiftStat, SwapRequest, TopUser, User} from "./types";
+import {Shift, ShiftStat, SwapRequest, TopUser, TopUserWithId, User} from "./types";
 
 const API_BASE_URL = "http://localhost:3000/api/v1";
 
@@ -177,6 +177,10 @@ export async function getShiftsStats() {
 
 export async function getTop3Users(date: string) {
     return await request<TopUser[]>(`/shifts/top3users?date=${encodeURIComponent(date)}`, { method: "GET" });
+}
+
+export async function getTop3UsersByTime(time: string) {
+    return await request<TopUserWithId[]>(`/shifts/top3usersByTime?time=${encodeURIComponent(time)}`, { method: "GET" });
 }
 
 export async function getScheduleByUserId(id: string) {

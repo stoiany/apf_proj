@@ -1,4 +1,4 @@
-import {entity, Shift, ShiftStat, SwapRequest, TopUser, User} from "./types.ts";
+import {entity, Shift, ShiftStat, SwapRequest, TopUser, TopUserWithId, User} from "./types.ts";
 
 function safe(text: string | undefined): string {
     if (!text) return "";
@@ -214,6 +214,23 @@ export function renderTop3Users(users: TopUser[]) {
     }
     tbody.innerHTML = users.map((u, index) => `
         <tr><td>${index + 1}</td><td>${safe(u.username)}</td><td>${u.count}</td></tr>
+    `).join("");
+}
+
+export function renderTop3UsersByTime(users: TopUserWithId[]) {
+    const tbody = document.getElementById("top3-by-time-table-body");
+    if (!tbody) return;
+    if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3">Немає даних</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = users.map((u, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${safe(u.username)}</td>
+            <td>${u.count}</td>
+            <td><button class="show-user-schedule" data-id=${u.id}>Показати графік</button></td>
+        </tr>
     `).join("");
 }
 

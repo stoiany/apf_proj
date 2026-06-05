@@ -3,7 +3,6 @@ import {state, setItems, setStatus, setFilter, setSort, getProcessedItems, setCu
 import * as ui from "./render.js";
 import {entity, formSchemas, Shift, SwapRequest, User} from "./types.ts";
 import {validateData} from "./validation.ts";
-import {createShift, createUser, updateShift, updateUser} from "./apiClient.ts";
 
 function setupNavigation(){
     const navButtons = document.querySelectorAll('header .nav-btn');
@@ -178,22 +177,22 @@ document.addEventListener("submit", async (e) => {
         if(form.id === "shiftsForm"){
             if(editId){
                 const dto = { ...formData, id: editId} as Shift;
-                await updateShift(editId, dto);
+                await api.updateShift(editId, dto);
                 ui.changeFormToCreate(form);
             } else {
                 const dto = { ...formData } as unknown as Shift;
-                await createShift(dto);
+                await api.createShift(dto);
             }
         }
 
         else if(form.id === "usersForm"){
             if(editId){
                 const dto = {...formData, id: editId} as User;
-                await updateUser(editId, dto);
+                await api.updateUser(editId, dto);
                 ui.changeFormToCreate(form);
             } else {
                 const dto = {...formData} as unknown as User;
-                await createUser(dto);
+                await api.createUser(dto);
             }
         }
 
@@ -325,6 +324,32 @@ document.addEventListener("click", async (e) => {
             ui.renderTop3Users(data || []);
         } catch (err) {
             alert("Помилка завантаження топу");
+        }
+    } else if(target.id === "load-top3-by-time-btn"){
+        const timeVal = (document.getElementById("top3-time-input") as HTMLSelectElement).value;
+        if(!timeVal) return alert("Оберіть час.");
+
+        try {
+            const data = await api.getTop3UsersByTime(timeVal);
+            ui.renderTop3UsersByTime(data || []);
+        } catch (err) {
+            alert("Помилка завантаження топу");
+        }
+    }
+});
+
+// show-user-schedule
+document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+    const id = target.dataset.id;
+
+    if(!id) return;
+    if (target.classList.contains("show-user-schedule")) {
+        try {
+            const shifts = await api.getScheduleByUserId(id);
+            ui.renderUserScheduleTable(shifts || []);
+        } catch (err) {
+            alert("Помилка завантаження розкладу");
         }
     }
 });

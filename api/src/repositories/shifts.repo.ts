@@ -266,6 +266,28 @@ export async function getTop3UsersByShiftCountRepo(date : string): Promise<{ use
     }));
 }
 
+export async function getTop3ByTimeRepo(time : string): Promise<{ username: string; id: string; count: number }[]> {
+    const db = await getDb();
+    const sql = `
+        SELECT u.username, 
+               u.id,
+               COUNT(s.id) as count 
+        FROM Shifts s
+        JOIN Users u ON s.userId = u.id
+        WHERE s.time LIKE ?
+        GROUP BY u.username
+        ORDER BY count DESC
+        LIMIT 3
+    `;
+    const rows = await db.all(sql, [`%${time}%`]);
+
+    return rows.map((row: any) => ({
+        username: String(row.username),
+        id: row.id,
+        count: Number(row.count)
+    }));
+}
+
 // export async function checkUserMatchesUsernameRepo(currentUserId: string, targetUsername: string): Promise<boolean> {
 //     const db = await getDb();
 //

@@ -46,6 +46,12 @@ export interface TopUser {
     count: number;
 }
 
+export interface TopUserWithId {
+    username: string;
+    id: string;
+    count: number;
+}
+
 export type ValidationSchema = Record<string, ValidationRule>;
 
 export const shiftSchema: ValidationSchema = {

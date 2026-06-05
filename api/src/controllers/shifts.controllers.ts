@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from "express";
 import {
-    createShift, getShiftsStats, getTop3UsersByShiftCount,
+    createShift, getShiftsStats, getTop3ByTime, getTop3UsersByShiftCount,
     readShiftById,
     readShifts,
     removeShift,
     updateShift,
 } from "../services/shifts.services";
-import {createShiftDto, dateDto, shiftQueryParamsDto, updateShiftDto} from "../schemas/shift.schemas";
+import {createShiftDto, dateDto, shiftQueryParamsDto, timeDto, updateShiftDto} from "../schemas/shift.schemas";
 import {targetIdDto} from "../schemas/other.schemas";
 import {checkShiftOwnershipRepo} from "../repositories/shifts.repo";
 import {ApiError} from "../middleware/ApiError.class";
@@ -85,6 +85,16 @@ export async function getTop3Users(req: Request, res: Response, next: NextFuncti
     try {
         const targetDateDto : dateDto = res.locals.query as dateDto;
         const stats = await getTop3UsersByShiftCount(targetDateDto);
+        res.status(200).json(stats);
+    } catch(err) {
+        next(err);
+    }
+}
+
+export async function getTop3UsersByTime(req: Request, res: Response, next: NextFunction){
+    try {
+        const targetTimeDto : timeDto = res.locals.query as timeDto;
+        const stats = await getTop3ByTime(targetTimeDto);
         res.status(200).json(stats);
     } catch(err) {
         next(err);

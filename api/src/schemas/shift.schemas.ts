@@ -73,3 +73,12 @@ export const dateSchema = z.object({
 });
 
 export type dateDto = z.infer<typeof dateSchema>;
+
+export const timeSchema = z.object({
+    time: z.enum(
+    ["morning", "day", "evening"],
+    "Time must be one of those: morning, day, evening."
+    )
+});
+
+export type timeDto = z.infer<typeof timeSchema>
